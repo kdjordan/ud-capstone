@@ -1,12 +1,24 @@
 <template>
   <div id="app">
-    <div id="nav">
+    <Header />
+    <!-- <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
     </div>
-    <router-view/>
+    <router-view/> -->
   </div>
 </template>
+
+<script>
+import Header from './components/Header';
+
+
+export default {
+  components: {
+    Header,
+  },
+}
+</script>
 
 <style lang="scss">
 #app {
@@ -15,15 +27,16 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+  font-family: Montserrat, sans-serif;
 }
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+
+body {
+  --color-primary-blue: #377BA6;
+  --color-secondary-blue: #80A7BF;
+  --color-tertiary-blue: #99B4BF;
+  --color-white: #F2EDE4;
+  --color-grey: #D7D8D9;
+  --color-black: #011C26;
 }
 </style>
