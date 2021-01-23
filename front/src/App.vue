@@ -1,6 +1,8 @@
 <template>
   <div id="app">
     <Header />
+    <ImageInput />
+    <GroupsGrid />
     <!-- <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
@@ -11,11 +13,15 @@
 
 <script>
 import Header from './components/Header';
+import GroupsGrid from './components/GroupsGrid';
+import ImageInput from './components/ImageInput';
 
 
 export default {
   components: {
     Header,
+    GroupsGrid,
+    ImageInput
   },
 }
 </script>
