@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <Header />
+    <Modal v-if="getModalActive"/>
     <ImageInput />
     <GroupsGrid />
     <!-- <div id="nav">
@@ -15,14 +16,26 @@
 import Header from './components/Header';
 import GroupsGrid from './components/GroupsGrid';
 import ImageInput from './components/ImageInput';
-
+import Modal from './components/Modal';
+import { mapGetters } from 'vuex' 
 
 export default {
   components: {
     Header,
     GroupsGrid,
-    ImageInput
+    ImageInput,
+    Modal
   },
+  data() {
+    return {
+      modalActive:true
+    }
+  },
+  computed: {
+    ...mapGetters([
+        'getModalActive'
+    ])
+}
 }
 </script>
 
