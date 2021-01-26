@@ -1,12 +1,28 @@
 <template>
   <div class="profile">
-      <h2>Welcome Back</h2>
+    <MyImages />
+    <ImageInput />
+      <!-- <GroupsGrid /> -->
   </div>
 </template>
 
 <script>
-export default {
+import GroupsGrid from '@/components/GroupsGrid';
+import ImageInput from '@/components/ImageInput';
+import MyImages from '@/components/MyImages';
 
+export default {
+  name: 'profile',
+  components: {
+      MyImages,
+      ImageInput
+      // HelloWorld
+  },
+  mounted() {
+    if(!this.$store.getters['isAuthenticated']){
+      this.$router.push('/')
+    }
+  }
 }
 </script>
 

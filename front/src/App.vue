@@ -2,13 +2,14 @@
   <div id="app">
     <Header />
     <Modal v-if="getModalActive"/>
-    <ImageInput />
-    <GroupsGrid />
+    <router-view/>
+    <!-- <ImageInput />
+    <GroupsGrid /> -->
     <!-- <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
-    </div>
-    <router-view/> -->
+    </div>  -->
+    
   </div>
 </template>
 
@@ -26,11 +27,6 @@ export default {
     ImageInput,
     Modal
   },
-  data() {
-    return {
-      modalActive:true
-    }
-  },
   computed: {
     ...mapGetters([
         'getModalActive'
@@ -40,22 +36,19 @@ export default {
 </script>
 
 <style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-  font-family: Montserrat, sans-serif;
-}
-
 body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
   --color-primary-blue: #377BA6;
   --color-secondary-blue: #80A7BF;
   --color-tertiary-blue: #99B4BF;
   --color-white: #F2EDE4;
   --color-grey: #D7D8D9;
   --color-black: #011C26;
+
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+  font-family: Montserrat, sans-serif;
 }
 </style>

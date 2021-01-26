@@ -1,11 +1,17 @@
 <template>
   <div class="header">
       <nav class="nav">
-          <div class="nav__logo-left"><h2>Simple Image Share</h2>{{getModalActive}}</div>
+          <div class="nav__logo-left"><h2>Simple Image Share</h2></div>
           <div class="nav__menu-right">
-              <router-link to="/" class="nav__menu-right--link">See All Images</router-link>
-              <router-link to="/" @click.native="doModal('signup')" class="nav__menu-right--link">Sign Up</router-link>  
-              <router-link to="/" @click.native="doModal('signin')" class="nav__menu-right--link">Sign In</router-link>
+              <ul v-if="!isAuthenticated">
+                <router-link to="/" class="nav__menu-right--link">See All Images</router-link>
+                <router-link to="/" @click.native="doModal('signup')" class="nav__menu-right--link">Sign Up</router-link>  
+                <router-link to="/" @click.native="doModal('signin')" class="nav__menu-right--link">Sign In</router-link>
+              </ul>
+              <ul v-else>
+                <router-link to="/" class="nav__menu-right--link">See All Images</router-link>
+                <router-link to="/" @click.native="signOut" class="nav__menu-right--link">Sign Out</router-link>
+              </ul>
           </div>
       </nav>
   </div>
@@ -13,25 +19,31 @@
 
 <script>
 import { mapGetters } from 'vuex' 
+
 export default {
 methods :{
     doModal(type) {
-        console.log('clicked')
         this.$store.commit('setModalActive', type)
+    },
+    signOut() {
+        this.$store.dispatch('logout')
     }
 },
 computed: {
     ...mapGetters([
-        'getModalActive'
+        'isAuthenticated'
     ])
 }
-
 }
 </script>
 
 <style lang="scss">
+.header {
+    background: var(--color-primary-blue);
+    
+}
 .nav {
-    color: var(--color-black);
+    color: var(--color-grey);
     // border: 1px solid red;
     display: flex;
     max-width: 1280px;
@@ -53,7 +65,7 @@ computed: {
             transition: all .3s;
 
             &:hover {
-                color: var(--color-grey);
+                color: var(--color-black);
             }
         }
     }

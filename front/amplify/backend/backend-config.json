@@ -1,6 +1,6 @@
 {
   "auth": {
-    "udcapstone4fc9aa70": {
+    "udcapstone00df0963": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
