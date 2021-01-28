@@ -146,10 +146,11 @@ data() {
                 //     })
                 //     console.log('added Dealer', addedDealer)
                     this.message = 'Success - Redirecting to your profile page'
+                    this.theFunction = 'none'
                     setTimeout(() => {
                         this.$store.commit('setModalActive', null)
                         this.message = ''
-                        // this.$router.push(`/profile/${authUser.attributes['email']}`)
+                        
                         this.$router.push(`/profile/`)
                 }, 2000)
                 // }
