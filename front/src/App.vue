@@ -3,13 +3,6 @@
     <Header />
     <Modal v-if="getModalActive"/>
     <router-view/>
-    <!-- <ImageInput />
-    <GroupsGrid /> -->
-    <!-- <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>  -->
-    
   </div>
 </template>
 
@@ -36,11 +29,13 @@ export default {
 </script>
 
 <style lang="scss">
-body {
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
 
+body {
   --color-primary-blue: #377BA6;
   --color-secondary-blue: #80A7BF;
   --color-tertiary-blue: #99B4BF;

@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import createPersistedState from 'vuex-persistedstate'
 import { Auth } from 'aws-amplify'
 
 Vue.use(Vuex)
@@ -11,6 +12,7 @@ export default new Vuex.Store({
     modalActive: false,
     modalType: null
   },
+  plugins: [createPersistedState()],
   mutations: {
     setModalActive(state, payload) {
       state.modalActive = !state.modalActive
