@@ -2,38 +2,12 @@ import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 
-// import { getAllTodos, checkUserExists, addUser } from '../../businessLogic/profile'
-import { getGroups } from '../../businessLogic/users'
+import { getGroups } from '../../businessLogic/groups'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     console.log(event)
   try {
-    //get admin ID from event
-    let dealerId = await getDealerId(event)
-
-    //check if admin matches shop adminId
-
-    //get the profile
-    let profile = await getDealer(dealerId)
-
-
-    // check to see if user exists in Users table
-    // let theUser = await checkUserExists(event)
-    
-    // const profile = await docClient.query({
-    //     TableName: profileTable,
-    //     KeyConditionExpression: 'dealerId = :dealerId',
-    //     ExpressionAttributeValues: {
-    //         ':dealerId': '111'
-    //     }
-    // }).promise()
-    // if so, get any todos they have
-    // if (theUser.count !== 0) {
-    //   todos = await getAllTodos(theUser.id)
-    // } else {
-    //   //add User to Users Table
-    //   await addUser(theUser.id)
-    // }
+    let groups = await getGroups()
 
     return {
       statusCode: 200,
@@ -42,11 +16,11 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
         'Access-Control-Allow-Credentials': true
 
       },
-      body: JSON.stringify({profile})
+      body: JSON.stringify({groups})
     }
    
   } catch (e) {
-      console.log("ERROR in getTodos", e);
+      console.log("ERROR getting Groups in getGroups Lambda", e);
       
       return {
         statusCode: 502,
