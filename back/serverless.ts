@@ -2,9 +2,9 @@ import type { Serverless } from 'serverless/aws';
 
 const serverlessConfiguration: Serverless = {
   service: {
-    name: 'backend',
+    name: 'back',
     // app and org for use with dashboard.serverless.com
-    // app: your-app-name,
+    // app: sis,
     // org: your-org-name,
   },
   frameworkVersion: '2',
@@ -26,19 +26,19 @@ const serverlessConfiguration: Serverless = {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
     },
   },
-  functions: {
-    hello: {
-      handler: 'handler.hello',
-      events: [
-        {
-          http: {
-            method: 'get',
-            path: 'hello',
-          }
-        }
-      ]
-    }
-  }
+  // functions: {
+  //   hello: {
+  //     handler: 'handler.hello',
+  //     events: [
+  //       {
+  //         http: {
+  //           method: 'get',
+  //           path: 'hello',
+  //         }
+  //       }
+  //     ]
+  //   }
+  // }
 }
 
 module.exports = serverlessConfiguration;
