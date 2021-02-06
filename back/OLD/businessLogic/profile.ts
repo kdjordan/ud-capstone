@@ -1,12 +1,12 @@
 // import * as uuid from 'uuid'
 
 
-import { ProfileItem } from '../models/ProfileItem'
-import { Dealer } from '../models/Dealer'
-import { ProfileAccess } from '../dataLayer/profileAccess'
+import { ProfileItem } from './models/ProfileItem'
+import { Dealer } from './models/Dealer'
+import { ProfileAccess } from './dataLayer/profileAccess'
 // import { CreateTodoRequest } from '../requests/CreateTodoRequest'
 // import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
-import { getTheDealerId } from '../lambda/utils'
+import { getTheDealerId } from './lambda/utils'
 
 
 // import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'

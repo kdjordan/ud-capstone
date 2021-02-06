@@ -2,27 +2,27 @@
   <div class="group-grid">
       <h2><center>Here are our current image Groups</center></h2>
       <div class="group-grid__container">
-        <div v-for="(image, index) in images" :key="index" class="group-grid__images">
-            <img :src="`${image.url}`" class="group-grid__images--img" alt="">
-            {{image.description}}
+        <div v-for="(group, index) in groups" :key="index" class="group-grid__images">
+            <img :src="`${group.groupUrl}`" class="group-grid__images--img" alt="">
+            {{group.description}}
         </div>
       </div>
   </div>
 </template>
 
 <script>
-import images from "@/data/images.js";
+import axios from 'axios'
 
 export default {
     data() {
         return{
-            images
+            groups: [],
         }
     },
-    methods: {
-        showImage() {
-            console.log(this.images.images)
-        }
+    async created() {
+        const theGroups = await axios.get('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/getGroups')
+        this.groups = theGroups['data']['groups'].sort((a,b) => (a.groupId > b.groupId ? 1 : -1))
+        console.log(this.groups.length)
     }
 }
 </script>
@@ -47,7 +47,7 @@ export default {
         margin: 2rem 0;
         
         &--img {
-            // width: 10rem;
+            margin-bottom: .5rem;
             height: 20rem;
         }
     }

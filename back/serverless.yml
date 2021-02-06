@@ -39,7 +39,8 @@ provider:
       Action:
         - dynamodb:Query
         - dynamodb:PutItem
-      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USER_TABLE}
+        - dynamodb:Scan
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.GROUPS_TABLE}
   
 
   apiGateway:
@@ -70,13 +71,13 @@ functions:
   #         path: checkDealer/{adminId}
   #         cors: true
 
-  # SignUp:
-  #   handler: src/lambda/http/signUp.handler
-  #   events:
-  #     - http:
-  #         method: post
-  #         path: signup
-  #         cors: true
+  AddUser:
+    handler: src/lambda/http/addUser.handler
+    events:
+      - http:
+          method: post
+          path: signup
+          cors: true
 
   # GetDeaaler:
   #   handler: src/lambda/http/getDealer.handler
@@ -123,7 +124,7 @@ resources:
           - AttributeName: groupId
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
-        TableName: ${self:provider.environment.GROUP_TABLE}
+        TableName: ${self:provider.environment.GROUPS_TABLE}
 
 
     

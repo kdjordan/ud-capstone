@@ -106,6 +106,8 @@ data() {
                 this.theFunction = 'login'
                 this.loginForm.email = this.registerForm.email
                 this.message = `You are verified. Login to continue`
+                //add user to DB
+                await this.$store.dispatch('addNewUser', this.registerForm)
             } catch (e){
                 this.message = `Error: ${e.message}`
                 console.log("ERROR in confirm", e) 

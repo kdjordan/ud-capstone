@@ -2,7 +2,7 @@
   <div class="home">
     <div class="home__inner">
         <h2>Welcome to the simple Image Sharing App</h2>
-        <p>Sign Up to join or Sign in if you're already a member !</p>
+        <p><span @click="doModal('signup')">Sign Up</span> to join or <span @click="doModal('signin')">Sign</span> in if you're already a member !</p>
     </div>
     <GroupsGrid />
   </div>
@@ -20,7 +20,12 @@ export default {
     Header,
     GroupsGrid
     // HelloWorld
-  }
+  },
+  methods :{
+    doModal(type) {
+        this.$store.commit('setModalActive', type)
+    }
+},
 }
 </script>
 
@@ -41,6 +46,18 @@ export default {
     & h2 {
       margin-bottom: 1rem;
     }
+
+    & span {
+      color: var(--color-primary-blue);
+      border-bottom: 1px solid transparent;
+      cursor: pointer;
+      transition: all .4s ease;
+
+      &:hover {
+        border-bottom: 1px solid var(--color-primary-blue);
+      }
+    }
+
   }
 }
 </style>

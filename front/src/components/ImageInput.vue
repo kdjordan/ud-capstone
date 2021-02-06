@@ -16,8 +16,9 @@
         </div>
         <div v-if="selectedGroup == 'new'">
             <label for="groups">New Group</label>
-            <input type="text" name="groups" v-model="newGroup">
+            <input type="text" name="groups" v-model="newGroup" :placeholder="errorMssg">
             <button @click="addGroup" class="add-button">ADD</button>
+            <button class="add-button" @click="closeAddGroup">Cancel</button>
         </div>
         <input type="file" accept="image/*" @change="uploadImage($event)">
         <button class="add-button" type ="submit">Upload</button>
@@ -39,13 +40,22 @@ data() {
         selectedGroup: {'value': '', 'text': ''},
         newGroup: '',
         theImage: null,
-        imageDesc: ''
+        imageDesc: '',
+        errorMssg: ''
     }
 },
 methods: {
     addGroup() {
-        this.optionsArr.push({'value': this.newGroup.toLowerCase(), text: this.newGroup})
-        this.selectedGroup = ''
+        if(this.newGroup !== '') {
+            this.optionsArr.push({'value': this.newGroup.toLowerCase(), text: this.newGroup})
+            this.selectedGroup = ''
+        } else {
+            this.errorMssg = 'CANNOT BE BLANK'
+        }
+    },
+    closeAddGroup() {
+        this.selectedGroup = {'value': '', 'text': ''}
+        this.errorMssg = ''
     },
     uploadImage(e) {
         this.theImage = e.target.files[0]
@@ -79,5 +89,9 @@ methods: {
 
 .add-button {
     margin-left: 1rem
+}
+
+input::placeholder {
+    color: red;
 }
 </style>

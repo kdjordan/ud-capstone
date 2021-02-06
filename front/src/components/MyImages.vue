@@ -1,26 +1,18 @@
 <template>
   <div class="my-images">
-      <h2>Welcome Back: {{user['email']}}</h2>
+      <h2>Images</h2>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex' 
+
 
 export default {
     data() {
         return {
-            user: ''
+            images: ''
         }
-    },
-    computed: {
-        ...mapGetters([
-            'getUser'
-        ])
-    },
-    mounted() {
-    this.user = this.getUser;
-  }
+    }
 }
 </script>
 

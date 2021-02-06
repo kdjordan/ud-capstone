@@ -8,16 +8,16 @@ export class GroupAccess {
  
     constructor(
       private readonly docClient: DocumentClient = createDynamoDBClient(),
-      private readonly groupTable = process.env.GROUP_TABLE
+      private readonly groupsTable = process.env.GROUPS_TABLE
       ) {
     }
 
     async getGroups(): Promise<Group[]> {
         try {
             let groups = await this.docClient.scan({
-               TableName: this.groupTable,
+               TableName: this.groupsTable,
            }).promise()
-           console.log(groups)
+        //    console.log(groups)
             const items = groups.Items
             return items as Group[]
         } catch (e) {

@@ -10,6 +10,7 @@
     "@aws-amplify/ui-vue": "^0.2.33",
     "aws-amplify": "^3.3.14",
     "axios": "^0.21.1",
+    "axois": "0.0.1-security",
     "core-js": "^2.6.5",
     "vue": "^2.6.10",
     "vue-router": "^3.0.3",

@@ -1,31 +1,47 @@
 <template>
   <div class="profile">
-    <MyImages />
+    <h2><center>Welcome Back: {{user['email']}}</center></h2>
     <ImageInput />
-      <!-- <GroupsGrid /> -->
+    <MyImages />
   </div>
 </template>
 
 <script>
-import GroupsGrid from '@/components/GroupsGrid';
+import { mapGetters } from 'vuex' 
 import ImageInput from '@/components/ImageInput';
 import MyImages from '@/components/MyImages';
 
 export default {
   name: 'profile',
+  data() {
+    return {
+      user: ''
+    }
+  }, 
   components: {
       MyImages,
       ImageInput
-      // HelloWorld
+  },
+  computed: {
+    ...mapGetters([
+          'getUser'
+      ])
   },
   mounted() {
     if(!this.$store.getters['isAuthenticated']){
       this.$router.push('/')
+    } else {
+      this.user = this.getUser;
     }
   }
 }
 </script>
 
 <style lang="scss">
+.profile {
+  & h2 {
+    margin-top: 1rem;
+  }
+}
 
 </style>

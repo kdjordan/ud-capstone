@@ -1,7 +1,7 @@
 <template>
   <div class="header">
       <nav class="nav">
-          <div class="nav__logo-left"><h2>Simple Image Share</h2></div>
+          <div class="nav__logo-left"><router-link to="/" class="nav__menu-right--link"><h2>Simple Image Share</h2></router-link></div>
           <div class="nav__menu-right">
               <ul v-if="!isAuthenticated">
                 <router-link to="/" class="nav__menu-right--link">See All Images</router-link>
@@ -11,6 +11,7 @@
               <ul v-else>
                 <router-link to="/" class="nav__menu-right--link">See All Images</router-link>
                 <router-link to="/" @click.native="signOut" class="nav__menu-right--link">Sign Out</router-link>
+                <router-link to="/profile" class="nav__menu-right--link">My Profile</router-link>
               </ul>
           </div>
       </nav>
@@ -21,7 +22,7 @@
 import { mapGetters } from 'vuex' 
 
 export default {
-methods :{
+methods: {
     doModal(type) {
         this.$store.commit('setModalActive', type)
     },
@@ -62,6 +63,7 @@ computed: {
             text-decoration: none;
             text-transform: uppercase;
             margin: 0 1rem;
+            cursor: pointer;
             transition: all .3s;
 
             &:hover {
