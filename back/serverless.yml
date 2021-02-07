@@ -41,6 +41,11 @@ provider:
         - dynamodb:PutItem
         - dynamodb:Scan
       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.GROUPS_TABLE}
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:PutItem
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USER_TABLE}
   
 
   apiGateway:
@@ -48,8 +53,8 @@ provider:
   
 
 functions:
-  Welcome :
-    handler: handler.handler
+  Auth:
+    handler: src/lambda/auth/authorizer.handler
 
   GetGroups :
     handler: src/lambda/http/getGroups.handler
@@ -58,6 +63,15 @@ functions:
           method: get
           path: getGroups
           cors: true
+  AddUser:
+    handler: src/lambda/http/addUser.handler
+    events:
+      - http:
+          authorizer: Auth
+          method: post
+          path: addUser
+          cors: true
+  
 
   # Auth:
   #   handler: src/lambda/auth/authorizer.handler
@@ -71,13 +85,7 @@ functions:
   #         path: checkDealer/{adminId}
   #         cors: true
 
-  AddUser:
-    handler: src/lambda/http/addUser.handler
-    events:
-      - http:
-          method: post
-          path: signup
-          cors: true
+  
 
   # GetDeaaler:
   #   handler: src/lambda/http/getDealer.handler

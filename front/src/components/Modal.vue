@@ -44,11 +44,11 @@
           <form @submit.prevent="login">
             <div class="modal__inner--row">
                     <label for="email">Email</label>
-                    <input v-model="loginForm.email" type="text" name="email" id="">
+                    <input v-model="loginForm.email" type="text" name="email">
             </div>
             <div class="modal__inner--row">
                     <label for="name">Password</label>
-                    <input v-model="loginForm.password" type="password" name="password" id="">
+                    <input v-model="loginForm.password" type="password" name="password">
                 </div>
                 <div class="modal__inner--row">
                     <button type="submit" class="modal__button">LOGIN</button>
@@ -79,6 +79,11 @@ data() {
         loginForm: {
             email: '',
             password: ''
+        },
+        registeredUser: {
+            userId: '',
+            email: '',
+            userName: ''
         }
 
     }
@@ -91,7 +96,10 @@ data() {
         },
         async register() {
             try {
-                const user = await this.$store.dispatch('register', this.registerForm)                
+                const regUser = await this.$store.dispatch('register', this.registerForm)
+                this.registeredUser.userId = regUser.userSub    
+                this.registeredUser.email = regUser.user['username']    
+                this.registeredUser.userName = this.registerForm.username
                 this.confirmForm.email = this.registerForm.email
                 this.theFunction = 'confirm'
                 this.message = `Success ! Your CODE was emailed to you.`
@@ -106,8 +114,7 @@ data() {
                 this.theFunction = 'login'
                 this.loginForm.email = this.registerForm.email
                 this.message = `You are verified. Login to continue`
-                //add user to DB
-                await this.$store.dispatch('addNewUser', this.registerForm)
+                await this.$store.dispatch('addNewUser', this.registeredUser)
             } catch (e){
                 this.message = `Error: ${e.message}`
                 console.log("ERROR in confirm", e) 
@@ -117,28 +124,6 @@ data() {
             try {
                 console.log('logging in', this.loginForm)
                 await this.$store.dispatch('login', this.loginForm)
-                //get current session and user information
-                const session = await Auth.currentSession()
-                const authUser = await Auth.currentAuthenticatedUser()
-                console.log('authUser', authUser)
-                //check to see if dealer exists in Profile DB
-                // console.log("the user is ", authUser)
-                // let userExists = await this.$axios.get(`https://pz39j5z4eg.execute-api.us-west-2.amazonaws.com/dev/checkDealer/${authUser.username}`, 
-                //         { headers: { 'Authorization': `Bearer ${session.accessToken.jwtToken}`} 
-                //     })        
-                //if userExists is true we can forward them to their admin page
-                //if userExists is false - we first need to populate the Profile DB with their info
-                // if(userExists.data.data) {
-                //   this.message = 'Success ! Redirecting...'
-                //   setTimeout(() => {
-                //     this.$store.commit('modal/setModalActive')
-                //     this.message = ''
-                //     this.$router.push(`/auth/${authUser.attributes['custom:shopName']}`)
-                //   }, 2000)
-                // } else {
-                //get dealer info from vuex
-                // let user = this.$store.getters['awsAuth/getUser']
-                //add user to DB
                 // let addedDealer = await this.$axios.post(`https://pz39j5z4eg.execute-api.us-west-2.amazonaws.com/dev/signup`,
                 //         { 
                 //         adminID: authUser.attributes.sub,
@@ -153,7 +138,7 @@ data() {
                         this.$store.commit('setModalActive', null)
                         this.message = ''
                         
-                        this.$router.push(`/profile/`)
+                        this.$router.push(`/profile`)
                 }, 2000)
                 // }
             } catch (e) {

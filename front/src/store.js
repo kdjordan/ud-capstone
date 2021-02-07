@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import { Auth } from 'aws-amplify'
+import axios from 'axios'
 
 Vue.use(Vuex)
 
@@ -42,41 +43,53 @@ export default new Vuex.Store({
     isAuthenticated(state) {
         return state.isAuthenticated
     },
-    getShopName(state) {
-        if(state.isAuthenticated) {
-            return state.user.attributes['custom:shopName']
-        }
-    }
   },
   actions: {
+    async addNewUser(_, form) {
+      try {
+        await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/addUser', {
+              userId: form.userId,
+              email: form.email,
+              username: form.userName
+            })
+      } catch(e) {
+        console.log("Error in Adding New User", `${e.message}`)
+        throw Error(e)
+      }
+    },
     async register(__, form ) {
-        console.log('registering')
-        console.log(form)
-        
         const user = await Auth.signUp({
             username: form.email,
-            password: form.password,  
+            password: form.password,
             attributes: {
-              email: form.email
-            }       
+              'custom:username': form.username
+          }
         })
         return user
       },
       async confirmRegistration(_, form) {
-          //confirm signUp and then add user profile to dynamoDb
-          return await Auth.confirmSignUp(form.email, form.code) 
+        try {
+          await Auth.confirmSignUp(form.email, form.code) 
+        } catch (e) {
+          console.log("ERROR Confirming Registration", `${e.message}`) 
+          throw Error(e)
+        }
       },
 
       async login({ commit }, form) {
-        console.log('loggin in', form)
+        try {
           const user = await Auth.signIn(form.email, form.password)
           commit('set', user)
           return user
+        } catch(e) {
+            console.log("ERROR Loggin in User", `${e.message}`) 
+            throw Error(e)
+        }
       },
 
       async resendCode(_,  email) {
           try {
-              await Auth.resendSignUp(email)
+            await Auth.resendSignUp(email)
           } catch (e) {
               console.log("Error resending code", e)
           }
@@ -84,16 +97,18 @@ export default new Vuex.Store({
       },
 
       async logout({ commit }) {
-          console.log('logging out')
+        try {
           await Auth.signOut()
           if(process.client) {
               localStorage.clear()
           }
           commit('unSet', null)
+
+        } catch(e) {
+          throw Error(e)
+        }
       },
     
   }
 
-
-
-}) // endsstore
+}) // ends store

@@ -10,7 +10,6 @@
 
 <script>
 // @ is an alias to /src
-// import HelloWorld from '@/components/HelloWorld.vue'
 import Header from '@/components/Header';
 import GroupsGrid from '@/components/GroupsGrid'
 
@@ -19,7 +18,6 @@ export default {
   components: {
     Header,
     GroupsGrid
-    // HelloWorld
   },
   methods :{
     doModal(type) {

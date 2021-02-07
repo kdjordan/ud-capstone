@@ -12,8 +12,8 @@ export class UserAccess {
       ) {
     }
 
-    async addUser(userId: string, userName: string, email: string): Promise<User> {
-        const newUser = { userId, userName, email }
+    async addUser(userId: string, username: string, email: string): Promise<User> {
+        const newUser = { userId, username, email }
         try {
             await this.docClient.put({
                TableName: this.userTable,

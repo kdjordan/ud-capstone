@@ -5,9 +5,10 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } f
 import { addUser } from '../../businessLogic/user'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    console.log(event)
+    const body = JSON.parse(event.body);
+    console.log(body)
   try {
-    let user = await addUser()
+    let user = await addUser(body.userId, body.username, body.email)
 
     return {
       statusCode: 200,

@@ -22,7 +22,6 @@ export default {
     async created() {
         const theGroups = await axios.get('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/getGroups')
         this.groups = theGroups['data']['groups'].sort((a,b) => (a.groupId > b.groupId ? 1 : -1))
-        console.log(this.groups.length)
     }
 }
 </script>

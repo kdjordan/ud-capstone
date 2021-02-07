@@ -3,6 +3,6 @@ import { UserAccess } from '../dataLayer/userAccess'
 
 const userAccess = new UserAccess()
 
-export async function addUser(userId: string, userName: string, email: string): Promise<User> {
-    return await userAccess.addUser(userId, userName, email)
+export async function addUser(userId: string, username: string, email: string): Promise<User> {
+    return await userAccess.addUser(userId, username, email)
   }

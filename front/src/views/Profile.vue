@@ -1,8 +1,9 @@
 <template>
   <div class="profile">
-    <h2><center>Welcome Back: {{user['email']}}</center></h2>
+    <h2><center>Welcome Back: {{user['custom:username']}}</center></h2>
     <ImageInput />
     <MyImages />
+    <button @click="userDump">DUMP</button>
   </div>
 </template>
 
@@ -26,6 +27,11 @@ export default {
     ...mapGetters([
           'getUser'
       ])
+  },
+  methods: {
+    userDump() {
+      console.log(this.$store.state)
+    }
   },
   mounted() {
     if(!this.$store.getters['isAuthenticated']){
