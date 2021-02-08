@@ -57,6 +57,17 @@ export default new Vuex.Store({
         throw Error(e)
       }
     },
+    async checkUser(_, userDetails){
+      try {
+        const userExists = await axios.get(`https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/checkUser/${userDetails.userId}`,
+          { headers: { 'Authorization': `Bearer ${userDetails.token}`} 
+        })
+        console.log('The user status is:', userExists)
+      } catch(e) {
+        console.log("Error in Checking user in store", `${e.message}`)
+        throw Error(e)
+      }
+    },
     async register(__, form ) {
         const user = await Auth.signUp({
             username: form.email,

@@ -1,31 +1,25 @@
-import { APIGatewayAuthorizerEvent, CustomAuthorizerResult } from 'aws-lambda'
+import { APIGatewayAuthorizerEvent, APIGatewayAuthorizerResult } from 'aws-lambda'
 import 'source-map-support/register'
 
-// const { jwt } = require('jsonwebtoken');
 import { verify, decode } from 'jsonwebtoken'
 import jwkToPem  from 'jwk-to-pem'
-
-
 
 import Axios from 'axios'
 import { Jwt } from '../../auth/Jwt'
 import { JwtPayload } from '../../auth/JwtPayload'
 
-
 const userPool = process.env.USER_POOL_ID
 const url = `https://cognito-idp.us-west-2.amazonaws.com/${userPool}/.well-known/jwks.json`
 
 
-export const handler = async (event: APIGatewayAuthorizerEvent): Promise<CustomAuthorizerResult> => {
-  // console.log('Authorizing a user', event.authorizationToken)
-  console.log(event)
+// export const handler = async (event: APIGatewayAuthorizerEvent): Promise<CustomAuthorizerResult> => {
+export const handler = async (event: APIGatewayAuthorizerEvent): Promise<APIGatewayAuthorizerResult> => {
   try {
-    // const jwtToken = await verifyToken(event.authorizationToken)
-    // console.log('User was authorized', jwtToken)
+    const jwtToken = await verifyToken(event['authorizationToken'])
+    console.log('User was authorized', jwtToken)
 
     return {
-      // principalId: jwtToken.sub,
-      principalId: 'jwtToken.sub',
+      principalId: jwtToken.sub,
       policyDocument: {
         Version: '2012-10-17',
         Statement: [

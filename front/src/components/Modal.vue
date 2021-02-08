@@ -122,8 +122,16 @@ data() {
         },
          async login() {
             try {
-                console.log('logging in', this.loginForm)
-                await this.$store.dispatch('login', this.loginForm)
+                const user = await this.$store.dispatch('login', this.loginForm)
+                const session = await Auth.currentSession()
+                console.log("token is:", session.accessToken.jwtToken)
+                console.log("USERID IS: ", user.attributes.sub)
+                if(user.attributes.sub !== '') {
+                    //check to see if user is in Dynamo - protected route using sls Authorizer
+                    const userExists = await this.$store.dispatch('checkUser', {userId: user.attributes.sub, token: session.accessToken.jwtToken})
+                }
+
+
                 // let addedDealer = await this.$axios.post(`https://pz39j5z4eg.execute-api.us-west-2.amazonaws.com/dev/signup`,
                 //         { 
                 //         adminID: authUser.attributes.sub,
@@ -132,13 +140,14 @@ data() {
                 //         { headers: { 'Authorization': `Bearer ${session.accessToken.jwtToken}`} 
                 //     })
                 //     console.log('added Dealer', addedDealer)
-                    this.message = 'Success - Redirecting to your profile page'
-                    this.theFunction = 'none'
-                    setTimeout(() => {
-                        this.$store.commit('setModalActive', null)
-                        this.message = ''
-                        
-                        this.$router.push(`/profile`)
+
+                this.message = 'Success - Redirecting to your profile page'
+                this.theFunction = 'none'
+                setTimeout(() => {
+                    this.$store.commit('setModalActive', null)
+                    this.message = ''
+                    
+                    this.$router.push(`/profile`)
                 }, 2000)
                 // }
             } catch (e) {

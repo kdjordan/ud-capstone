@@ -28,6 +28,22 @@ export class UserAccess {
             console.log("ERROR getting groups in ACCESS", e)
         }
        }
+
+    async checkUser(userId: string): Promise<Boolean> {
+        try {
+            const result = await this.docClient.query({
+               TableName: this.userTable,
+               KeyConditionExpression: 'userId = :userId',
+                ExpressionAttributeValues: { ':userId': userId }
+           }).promise()
+
+        if(result.Items.length == 0) { return false } 
+        else { return true }
+
+        } catch (e) {
+            console.log("ERROR getting groups in ACCESS", e)
+        }
+       }
 }
 
 function createDynamoDBClient() {

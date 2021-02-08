@@ -63,11 +63,22 @@ functions:
           method: get
           path: getGroups
           cors: true
+
+  CheckUser: 
+    handler: src/lambda/http/checkUser.handler
+    events: 
+      - http:
+          authorizer: Auth
+          method: get
+          path: checkUser/{userId}
+          cors: true
+
+
   AddUser:
     handler: src/lambda/http/addUser.handler
     events:
       - http:
-          authorizer: Auth
+          # authorizer: Auth
           method: post
           path: addUser
           cors: true
