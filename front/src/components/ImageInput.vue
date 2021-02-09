@@ -9,7 +9,7 @@
         <div>
             <label for="group-select">Choose a group:</label>
                 <select v-model="selectedGroup">
-                    <option v-for="(option, index) in optionsArr" :key="index" :value="option['value']">
+                    <option v-for="(option, index) in getGroupsOptions" :key="index" :value="option['value']">
                         {{option['text']}}
                     </option>
                 </select>
@@ -23,22 +23,18 @@
         <input type="file" accept="image/*" @change="uploadImage($event)">
         <button class="add-button" type ="submit">Upload</button>
       </form>
+      <!-- {{getGroupsOptions}}: -->
       <!-- {{selectedGroup}}: -->
   </div>
 </template>
 
 <script>
 import { Auth } from 'aws-amplify'
+import { mapGetters } from 'vuex'
 
 export default {
 data() {
     return {
-        optionsArr: [
-            {'value': 'new', 'text': '>--Add a New group--<'},
-            {'value': 'dogs', 'text': 'Dogs'},
-            {'value': 'cats', 'text': 'Cats'},
-            {'value': 'technology', 'text': 'Technology'},
-        ],
         selectedGroup: {'value': '', 'text': ''},
         newGroup: '',
         theImage: null,
@@ -65,7 +61,8 @@ methods: {
     async doUpload() {
         try {
             const session = await Auth.currentSession()
-            await this.$store.dispatch('addGroup', )
+
+            // await this.$store.dispatch('addGroup', )
             console.log('group', this.selectedGroup)
             console.log('theImage', this.theImage)
             console.log('imageDesc', this.selectedGroup)
@@ -76,7 +73,7 @@ methods: {
     }
 },
 computed: {
-
+    ...mapGetters(['getGroupsOptions'])
 }
 }
 </script>

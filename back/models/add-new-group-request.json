@@ -1,0 +1,21 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "newGroup",
+    "type": "object",
+    "properties": {
+      "groupId": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "groupUrl": {
+        "type": "string"
+      },
+      "options": {
+        "type": "object"
+      }
+    },
+    "required": ["groupId","description","groupUrl"],
+    "additionalProperties": false
+  }

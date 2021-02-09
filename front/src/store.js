@@ -11,7 +11,8 @@ export default new Vuex.Store({
     isAuthenticated: false,
     user: null,
     modalActive: false,
-    modalType: null
+    modalType: null,
+    groupsOptions: []
   },
   plugins: [createPersistedState()],
   mutations: {
@@ -26,9 +27,15 @@ export default new Vuex.Store({
     unSet(state) {
       state.isAuthenticated = false
       state.user = null
+    },
+    setGroupsOptions(state, payload) {
+      state.groupsOptions = payload
     }
   },
   getters: {
+    getGroupsOptions(state) {
+      return state.groupsOptions
+    },
     getModalActive(state) {
       return state.modalActive
     },
