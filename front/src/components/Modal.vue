@@ -17,13 +17,16 @@
                     <input v-model="registerForm.password" type="password" name="password">
                 </div>
                 <div class="modal__inner--row">
-                    <button type="submit" class="modal__button">SUBMIT</button>
+                    <button type="submit" class="modal__button" :disabled='buttonDisabled'>SUBMIT</button>
                 </div>
             </form>
       </div>
       <div v-if="theFunction == 'confirm'" class="modal__inner"> 
           <h2>Confirm Your Identity</h2>
           <p>{{message}}</p>
+          <p>
+            Click <span @click.prevent="resendCode" class="under">here</span> to resend the code
+          </p>
           <form @submit.prevent="confirm">
             <div class="modal__inner--row">
                     <label for="name">Email</label>
@@ -34,7 +37,7 @@
                     <input v-model="confirmForm.code" type="text" name="code">
                 </div>
                 <div class="modal__inner--row">
-                    <button type="submit" class="modal__button">VERIFY</button>
+                    <button type="submit" class="modal__button" :disabled='buttonDisabled'>VERIFY</button>
                 </div>
             </form>
       </div>
@@ -51,7 +54,7 @@
                     <input v-model="loginForm.password" type="password" name="password">
                 </div>
                 <div class="modal__inner--row">
-                    <button type="submit" class="modal__button">LOGIN</button>
+                    <button type="submit" class="modal__button" :disabled='buttonDisabled'>LOGIN</button>
                 </div>
             </form>
       </div>
@@ -65,6 +68,7 @@ import { Auth } from 'aws-amplify'
 export default {
 data() {
     return {
+        buttonDisabled: false,
         theFunction: 'register',
         message: '',
         registerForm: {
@@ -83,7 +87,7 @@ data() {
         registeredUser: {
             userId: '',
             email: '',
-            userName: ''
+            username: ''
         }
 
     }
@@ -96,13 +100,15 @@ data() {
         },
         async register() {
             try {
+                this.buttonDisabled = true
                 const regUser = await this.$store.dispatch('register', this.registerForm)
                 this.registeredUser.userId = regUser.userSub    
                 this.registeredUser.email = regUser.user['username']    
-                this.registeredUser.userName = this.registerForm.username
+                this.registeredUser.username = this.registerForm.username
                 this.confirmForm.email = this.registerForm.email
                 this.theFunction = 'confirm'
                 this.message = `Success ! Your CODE was emailed to you.`
+                this.buttonDisabled = false
             } catch (e) {
                 this.message = `Error: ${e.message}`
                 console.log("ERROR in register", e) 
@@ -110,11 +116,14 @@ data() {
         },
         async confirm() {
             try {
+                if(this.confirmForm.code !== '') {
+                    this.buttonDisabled = true
+                }
                 await this.$store.dispatch('confirmRegistration', this.confirmForm)
                 this.theFunction = 'login'
                 this.loginForm.email = this.registerForm.email
                 this.message = `You are verified. Login to continue`
-                await this.$store.dispatch('addNewUser', this.registeredUser)
+                this.buttonDisabled = false
             } catch (e){
                 this.message = `Error: ${e.message}`
                 console.log("ERROR in confirm", e) 
@@ -122,31 +131,26 @@ data() {
         },
          async login() {
             try {
+                this.buttonDisabled = true
                 const user = await this.$store.dispatch('login', this.loginForm)
                 const session = await Auth.currentSession()
-                console.log("token is:", session.accessToken.jwtToken)
-                console.log("USERID IS: ", user.attributes.sub)
                 if(user.attributes.sub !== '') {
-                    //check to see if user is in Dynamo - protected route using sls Authorizer
+                    //check to see if user is in DynamoDB - protected route using sls Authorizer
                     const userExists = await this.$store.dispatch('checkUser', {userId: user.attributes.sub, token: session.accessToken.jwtToken})
+                    //if user does not exist - add to DynamoDB
+                    if (!userExists) {
+                        //add user to Dynamo
+                        // console.log("the Adding the newUser: ", this.registeredUser)
+                        await this.$store.dispatch('addNewUser', {token: session.accessToken.jwtToken, ...this.registeredUser})
+                    }
                 }
-
-
-                // let addedDealer = await this.$axios.post(`https://pz39j5z4eg.execute-api.us-west-2.amazonaws.com/dev/signup`,
-                //         { 
-                //         adminID: authUser.attributes.sub,
-                //         shopName: authUser.attributes['custom:shopName']
-                //         },
-                //         { headers: { 'Authorization': `Bearer ${session.accessToken.jwtToken}`} 
-                //     })
-                //     console.log('added Dealer', addedDealer)
 
                 this.message = 'Success - Redirecting to your profile page'
                 this.theFunction = 'none'
                 setTimeout(() => {
                     this.$store.commit('setModalActive', null)
                     this.message = ''
-                    
+                    this.buttonDisabled = false
                     this.$router.push(`/profile`)
                 }, 2000)
                 // }
@@ -154,7 +158,16 @@ data() {
                 this.message = `Error: ${e.message}`
                 console.log("ERROR loggin in ", e) 
             }   
-         } 
+         },
+         async resendCode() {
+             try {
+                 await this.$store.dispatch('resendCode', this.confirmForm.email)
+             } catch(e) {
+                this.message = `Error: ${e.message}`
+                console.log("ERROR resending Code", e) 
+             }
+
+         }
     },
     computed: {
         ...mapGetters([
@@ -198,6 +211,19 @@ data() {
             align-items: center;
             justify-content: flex-start;
         }
+    }
+
+    
+}
+
+.under {
+    cursor: pointer;
+    border-bottom: 1px solid var(--color-black);
+    transition: all .4s ease;
+
+    &:hover {
+        color: var(--color-secondary-blue);
+        border-bottom: 1px solid var(--color-secondary-blue);
     }
 }
 </style>

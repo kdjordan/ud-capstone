@@ -9,11 +9,22 @@ custom:
     webpackConfig: ./webpack.config.js
     includeModules: true
 
-# Add the serverless-webpack plugin
+  documentation: 
+    api:
+      info:
+        version: v!.0
+        title: Simple Image Share(SIS) API
+        description: Serverless Application for sharing images
+    models: 
+      - name: AddUser
+        contentType: application/json
+        schema: ${file(models/add-new-user-request.json)}
+
+    # Add the serverless-webpack plugin
 plugins:
   - serverless-webpack
-  # - serverless-reqvalidator-plugin
-  # - serverless-aws-documentation
+  - serverless-reqvalidator-plugin
+  - serverless-aws-documentation
 
 provider:
   name: aws
@@ -56,6 +67,15 @@ functions:
   Auth:
     handler: src/lambda/auth/authorizer.handler
 
+  AddGroup :
+    handler: src/lambda/http/addGroup.handler
+    events: 
+      - http:
+          authorizer: Auth
+          method: post
+          path: addGroup
+          cors: true
+
   GetGroups :
     handler: src/lambda/http/getGroups.handler
     events: 
@@ -78,10 +98,16 @@ functions:
     handler: src/lambda/http/addUser.handler
     events:
       - http:
-          # authorizer: Auth
+          authorizer: Auth
           method: post
           path: addUser
           cors: true
+          reqValidatorName: RequestBodyValidator
+          documentation: 
+            summary: Great a New User
+            description: Great a New User
+            requestModels: 
+              'application/json': AddUser
   
 
   # Auth:
@@ -110,6 +136,15 @@ functions:
 
 resources:
   Resources:
+    RequestBodyValidator:
+      Type: AWS::ApiGateway::RequestValidator
+      Properties: 
+        Name: 'request-body-validator'
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        ValidateRequestBody: true
+        ValidateRequestParameters: false
+
     GatewayResponseDefault4XX:
       Type: AWS::ApiGateway::GatewayResponse
       Properties:

@@ -47,11 +47,15 @@ export default new Vuex.Store({
   actions: {
     async addNewUser(_, form) {
       try {
-        await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/addUser', {
+        console.log("The form in AddUser store: ", form)
+        await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/addUser', 
+            {
               userId: form.userId,
               email: form.email,
-              username: form.userName
-            })
+              username: form.username
+            },
+            { headers: { 'Authorization': `Bearer ${form.token}`}}
+        )
       } catch(e) {
         console.log("Error in Adding New User", `${e.message}`)
         throw Error(e)
@@ -62,7 +66,9 @@ export default new Vuex.Store({
         const userExists = await axios.get(`https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/checkUser/${userDetails.userId}`,
           { headers: { 'Authorization': `Bearer ${userDetails.token}`} 
         })
-        console.log('The user status is:', userExists)
+        if(!userExists.data['user']) {
+          return false
+        } else { return true}
       } catch(e) {
         console.log("Error in Checking user in store", `${e.message}`)
         throw Error(e)
@@ -103,6 +109,7 @@ export default new Vuex.Store({
             await Auth.resendSignUp(email)
           } catch (e) {
               console.log("Error resending code", e)
+              throw Error(e)
           }
 
       },
@@ -119,6 +126,21 @@ export default new Vuex.Store({
           throw Error(e)
         }
       },
+
+      async addGroup(_, newGroup) {
+        try {
+          await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/addGroup', 
+          {
+            groupId: form.groupId,
+            description: form.description,
+            groupUrl: "TEST_URL"
+          },
+          { headers: { 'Authorization': `Bearer ${form.token}`}}
+      )
+        } catch (e) {
+          throw Error(e)
+        }
+      }
     
   }
 

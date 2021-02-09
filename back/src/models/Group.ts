@@ -1,6 +1,6 @@
 export interface Group {
     groupId: string,
-    groupDescription: string,
+    description: string,
     groupUrl: string
   }
   

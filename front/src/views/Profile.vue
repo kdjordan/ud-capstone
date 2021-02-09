@@ -12,6 +12,7 @@ import { mapGetters } from 'vuex'
 import ImageInput from '@/components/ImageInput';
 import MyImages from '@/components/MyImages';
 
+
 export default {
   name: 'profile',
   data() {
@@ -29,7 +30,7 @@ export default {
       ])
   },
   methods: {
-    userDump() {
+    async userDump() {
       console.log(this.$store.state)
     }
   },

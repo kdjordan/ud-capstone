@@ -11,8 +11,6 @@ import { JwtPayload } from '../../auth/JwtPayload'
 const userPool = process.env.USER_POOL_ID
 const url = `https://cognito-idp.us-west-2.amazonaws.com/${userPool}/.well-known/jwks.json`
 
-
-// export const handler = async (event: APIGatewayAuthorizerEvent): Promise<CustomAuthorizerResult> => {
 export const handler = async (event: APIGatewayAuthorizerEvent): Promise<APIGatewayAuthorizerResult> => {
   try {
     const jwtToken = await verifyToken(event['authorizationToken'])

@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import { Auth } from 'aws-amplify'
+
 export default {
 data() {
     return {
@@ -60,11 +62,21 @@ methods: {
     uploadImage(e) {
         this.theImage = e.target.files[0]
     },
-    doUpload() {
-        console.log('group', this.selectedGroup)
-        console.log('theImage', this.theImage)
-        console.log('imageDesc', this.selectedGroup)
+    async doUpload() {
+        try {
+            const session = await Auth.currentSession()
+            await this.$store.dispatch('addGroup', )
+            console.log('group', this.selectedGroup)
+            console.log('theImage', this.theImage)
+            console.log('imageDesc', this.selectedGroup)
+        } catch(e) {
+            console.log("Error uploading Image", `${e.message}`)
+            throw Error(e)
+        }
     }
+},
+computed: {
+
 }
 }
 </script>

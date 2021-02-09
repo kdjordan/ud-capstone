@@ -7,3 +7,7 @@ const groupAccess = new GroupAccess()
 export async function getGroups(): Promise<Group[]> {
     return await groupAccess.getGroups()
   }
+
+export async function addGroup(groupId: string, description: string, groupUrl: string): Promise<Group> {
+    return await groupAccess.addGroup(groupId, description, groupUrl)
+  }
