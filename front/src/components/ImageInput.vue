@@ -25,12 +25,14 @@
       </form>
       <!-- {{getGroupsOptions}}: -->
       <!-- {{selectedGroup}}: -->
+      <!-- {{imageDesc}}: -->
   </div>
 </template>
 
 <script>
 import { Auth } from 'aws-amplify'
 import { mapGetters } from 'vuex'
+import axios from 'axios'
 
 export default {
 data() {
@@ -61,11 +63,15 @@ methods: {
     async doUpload() {
         try {
             const session = await Auth.currentSession()
-
+            const groupUpload = {
+                groupId: this.getGroupsOptions.length,
+                options : {text: this.selectedGroup, value: this.selectedGroup},
+                theImage: this.theImage,
+                imgeDesc: this.imageDesc,
+                token: session.accessToken.jwtToken
+            }
+            console.log('UPLOAD', groupUpload)
             // await this.$store.dispatch('addGroup', )
-            console.log('group', this.selectedGroup)
-            console.log('theImage', this.theImage)
-            console.log('imageDesc', this.selectedGroup)
         } catch(e) {
             console.log("Error uploading Image", `${e.message}`)
             throw Error(e)
@@ -73,7 +79,7 @@ methods: {
     }
 },
 computed: {
-    ...mapGetters(['getGroupsOptions'])
+    ...mapGetters(['getGroupsOptions', 'getUser'])
 }
 }
 </script>

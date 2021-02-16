@@ -23,9 +23,9 @@ export default {
         try{
             const theGroups = await axios.get('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/getGroups')
             let theOptions = []
+            //set up options for dropdown in ImageInput.vue -> add these options to store
             theOptions.push({'value': 'new', 'text': '>--Add a New group--<'})
             theGroups.data.groups.forEach((group)=> {
-                console.log(group)
                 theOptions.push(group.options)
                 })
             this.$store.commit('setGroupsOptions', theOptions)

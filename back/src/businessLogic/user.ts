@@ -12,3 +12,5 @@ export async function checkUser(userId: string): Promise<Boolean> {
   console.log("Result in user-ts", result)
     return await userAccess.checkUser(userId)
   }
+
+  

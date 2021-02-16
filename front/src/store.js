@@ -147,6 +147,20 @@ export default new Vuex.Store({
         } catch (e) {
           throw Error(e)
         }
+      },
+
+      async getUrl({state}) {
+        try {
+          const session = await Auth.currentSession()
+          let theUrl = await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/genUrl',
+          { userId: state.user.sub},
+          { headers: { 'Authorization': `Bearer ${session.accessToken.jwtToken}`}}
+          )
+          console.log('The Url be like ', theUrl)
+          return theUrl
+        } catch(e) {
+          throw Error(e)
+        }
       }
     
   }
