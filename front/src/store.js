@@ -10,6 +10,7 @@ export default new Vuex.Store({
   state: {
     isAuthenticated: false,
     user: null,
+    session: null,
     modalActive: false,
     modalType: null,
     groupsOptions: []
@@ -20,13 +21,17 @@ export default new Vuex.Store({
       state.modalActive = !state.modalActive
       state.modalType = payload
     },
-    set(state, user) {
+    setUser(state, user) {
       state.isAuthenticated = true
       state.user = user
+    },
+    setSession(state, session) {
+      state.session = session
     },
     unSet(state) {
       state.isAuthenticated = false
       state.user = null
+      state.session = null
     },
     setGroupsOptions(state, payload) {
       state.groupsOptions = payload
@@ -52,7 +57,7 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    async addNewUser(_, form) {
+    async addNewUser({state}, form) {
       try {
         console.log("The form in AddUser store: ", form)
         await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/addUser', 
@@ -61,17 +66,17 @@ export default new Vuex.Store({
               email: form.email,
               username: form.username
             },
-            { headers: { 'Authorization': `Bearer ${form.token}`}}
+            { headers: { 'Authorization': `Bearer ${state.session.accessToken.jwtToken}`}}
         )
       } catch(e) {
         console.log("Error in Adding New User", `${e.message}`)
         throw Error(e)
       }
     },
-    async checkUser(_, userDetails){
+    async checkUser({state}, userDetails){
       try {
-        const userExists = await axios.get(`https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/checkUser/${userDetails.userId}`,
-          { headers: { 'Authorization': `Bearer ${userDetails.token}`} 
+        const userExists = await axios.get(`https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/checkUser/${state.user.attributes.sub}`,
+          { headers: { 'Authorization': `Bearer ${state.session.accessToken.jwtToken}`} 
         })
         if(!userExists.data['user']) {
           return false
@@ -103,7 +108,9 @@ export default new Vuex.Store({
       async login({ commit }, form) {
         try {
           const user = await Auth.signIn(form.email, form.password)
-          commit('set', user)
+          const session = await Auth.currentSession()
+          commit('setUser', user)
+          commit('setSession', session)
           return user
         } catch(e) {
             console.log("ERROR Loggin in User", `${e.message}`) 
@@ -134,7 +141,7 @@ export default new Vuex.Store({
         }
       },
 
-      async addGroup(_, newGroup) {
+      async addGroup(_, form) {
         try {
           await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/addGroup', 
           {

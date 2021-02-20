@@ -133,15 +133,14 @@ data() {
             try {
                 this.buttonDisabled = true
                 const user = await this.$store.dispatch('login', this.loginForm)
-                const session = await Auth.currentSession()
                 if(user.attributes.sub !== '') {
                     //check to see if user is in DynamoDB - protected route using sls Authorizer
-                    const userExists = await this.$store.dispatch('checkUser', {userId: user.attributes.sub, token: session.accessToken.jwtToken})
+                    const userExists = await this.$store.dispatch('checkUser')
                     //if user does not exist - add to DynamoDB
                     if (!userExists) {
                         //add user to Dynamo
                         // console.log("the Adding the newUser: ", this.registeredUser)
-                        await this.$store.dispatch('addNewUser', {token: session.accessToken.jwtToken, ...this.registeredUser})
+                        await this.$store.dispatch('addNewUser', {...this.registeredUser})
                     }
                 }
 

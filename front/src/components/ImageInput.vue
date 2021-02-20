@@ -47,7 +47,7 @@ data() {
 methods: {
     addGroup() {
         if(this.newGroup !== '') {
-            this.optionsArr.push({'value': this.newGroup.toLowerCase(), text: this.newGroup})
+            this.optionsArr.push({'value': this.newGroup.toLowerCase(), 'text': this.newGroup})
             this.selectedGroup = ''
         } else {
             this.errorMssg = 'CANNOT BE BLANK'
