@@ -8,9 +8,9 @@ export async function addUser(userId: string, username: string, email: string): 
   }
 
 export async function checkUser(userId: string): Promise<Boolean> {
-  let result = await userAccess.checkUser(userId)
-  console.log("Result in user-ts", result)
     return await userAccess.checkUser(userId)
   }
+
+
 
   

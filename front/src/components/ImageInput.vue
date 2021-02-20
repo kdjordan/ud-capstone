@@ -62,15 +62,25 @@ methods: {
     },
     async doUpload() {
         try {
-            const session = await Auth.currentSession()
-            const groupUpload = {
-                groupId: this.getGroupsOptions.length,
-                options : {text: this.selectedGroup, value: this.selectedGroup},
-                theImage: this.theImage,
-                imgeDesc: this.imageDesc,
-                token: session.accessToken.jwtToken
-            }
-            console.log('UPLOAD', groupUpload)
+            
+            // const session = await Auth.currentSession()
+            const uploadUrl = await this.$store.dispatch('getUrl')
+
+            console.log("URL IS: ", uploadUrl)
+            console.log("Image is :", this.theImage.type)
+
+            const result = await axios.put(uploadUrl, this.theImage, 
+                { headers: {'Content-Type': this.theImage.type}} )
+
+            console.log("The Result IS: ", result)
+            // const groupUpload = {
+            //     groupId: this.getGroupsOptions.length,
+            //     options : {text: this.selectedGroup, value: this.selectedGroup},
+            //     theImage: this.theImage,
+            //     imgeDesc: this.imageDesc,
+            //     token: session.accessToken.jwtToken
+            // }
+            // console.log('UPLOAD', groupUpload)
             // await this.$store.dispatch('addGroup', )
         } catch(e) {
             console.log("Error uploading Image", `${e.message}`)

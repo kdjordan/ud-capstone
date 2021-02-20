@@ -43,7 +43,8 @@ export class UserAccess {
         } catch (e) {
             console.log("ERROR getting groups in ACCESS", e)
         }
-       }
+    }
+
 }
 
 function createDynamoDBClient() {

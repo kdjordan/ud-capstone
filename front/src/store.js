@@ -156,8 +156,7 @@ export default new Vuex.Store({
           { userId: state.user.sub},
           { headers: { 'Authorization': `Bearer ${session.accessToken.jwtToken}`}}
           )
-          console.log('The Url be like ', theUrl)
-          return theUrl
+          return theUrl.data.uploadUrl
         } catch(e) {
           throw Error(e)
         }
