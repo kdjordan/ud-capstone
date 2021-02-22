@@ -3,12 +3,18 @@
     "title": "image",
     "type": "object",
     "properties": {
-      "title": {
+      "groupId": {
+        "type": "string"
+      },
+      "theImage": {
+        "type": "object"
+      },
+      "imageDesc": {
         "type": "string"
       }
     },
     "required": [
-      "title"
+      "groupId", "theImage", "imageDesc"
     ],
     "additionalProperties": false
 }

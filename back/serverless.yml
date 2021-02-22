@@ -22,9 +22,9 @@ custom:
       - name: AddGroup
         contentType: application/json
         schema: ${file(models/add-new-group-request.json)}
-      - name: ImageRequest
+      - name: PutImageRequest
         contentType: application/json
-        schema: ${file(models/create-image-request.json)}
+        schema: ${file(models/put-image-request.json)}
 
     # Add the serverless-webpack plugin
 plugins:
@@ -57,6 +57,7 @@ provider:
         - dynamodb:Query
         - dynamodb:PutItem
         - dynamodb:Scan
+        - dynamodb:GetItem
       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.GROUPS_TABLE}
     - Effect: Allow
       Action:
@@ -124,47 +125,30 @@ functions:
             description: Great a New User
             requestModels: 
               'application/json': AddUser
-  
-  GenUrl:
-    handler: src/lambda/s3/genUrl.handler
+              
+  PutImage:
+    handler: src/lambda/http/putImage.handler
     events:
       - http:
           authorizer: Auth
           method: post
-          path: genUrl
+          path: putImage
           cors: true
-          # reqValidatorName: RequestBodyValidator
-          # documentation:
-          #   summary: Create a new image
-          #   description: Create a new image
-          #   requestModels:
-          #     'application/json': ImageRequest
-
+          reqValidatorName: RequestBodyValidator
+          documentation: 
+            summary: Add an Image to s3 
+            description: Add an Image to s3 
+            requestModels: 
+              'application/json': PutImageRequest
   
-
-  # Auth:
-  #   handler: src/lambda/auth/authorizer.handler
-  
-  # CheckDealerExists:
-  #   handler: src/lambda/http/checkDealerExists.handler
+  # GenUrl:
+  #   handler: src/lambda/s3/genUrl.handler
   #   events:
   #     - http:
   #         authorizer: Auth
-  #         method: get
-  #         path: checkDealer/{adminId}
+  #         method: post
+  #         path: genUrl
   #         cors: true
-
-  
-
-  # GetDeaaler:
-  #   handler: src/lambda/http/getDealer.handler
-  #   events:
-  #     - http:
-  #         authorizer: Auth
-  #         method: get
-  #         path: dealer/{dealerName}
-  #         cors: true
-    
 
 resources:
   Resources:

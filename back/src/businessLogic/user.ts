@@ -11,6 +11,10 @@ export async function checkUser(userId: string): Promise<Boolean> {
     return await userAccess.checkUser(userId)
   }
 
+export async function putImage(userId: string): Promise<Boolean> {
+    return await userAccess.checkUser(userId)
+  }
+
 
 
   

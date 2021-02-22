@@ -40,6 +40,21 @@ export class GroupAccess {
             console.log("ERROR adding group in ACCESS", e)
         }
        }
+
+       async checkGroup(groupId: string) {
+        console.log('calling checkGroup in: ', groupId)
+        const result = await this.docClient.get({
+            TableName: this.groupsTable,
+            Key: {
+              groupId
+            }
+          })
+          .promise()
+      
+        console.log('Get group: ', result)
+        return !!result.Item
+      }
+      
 }
 
 function createDynamoDBClient() {

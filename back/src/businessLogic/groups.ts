@@ -11,3 +11,7 @@ export async function getGroups(): Promise<Group[]> {
 export async function addGroup(groupId: string, description: string, groupUrl: string): Promise<Group> {
     return await groupAccess.addGroup(groupId, description, groupUrl)
   }
+
+export async function checkGroup(groupId: string): Promise<Boolean> {
+    return await groupAccess.checkGroup(groupId)
+  }

@@ -138,12 +138,9 @@ data() {
                     const userExists = await this.$store.dispatch('checkUser')
                     //if user does not exist - add to DynamoDB
                     if (!userExists) {
-                        //add user to Dynamo
-                        // console.log("the Adding the newUser: ", this.registeredUser)
                         await this.$store.dispatch('addNewUser', {...this.registeredUser})
                     }
                 }
-
                 this.message = 'Success - Redirecting to your profile page'
                 this.theFunction = 'none'
                 setTimeout(() => {
