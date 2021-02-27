@@ -73,6 +73,18 @@ export default new Vuex.Store({
       }
     },
 
+    async addGroup({state}, form) {
+      try {
+        console.log("adding group in store ", form)
+        const result = await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/addGroup', form,
+        { headers: { 'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`}})
+        return result
+        // return true
+      } catch (e) {
+        throw Error(e)
+      }
+    },
+
     async checkUser({state}){
       try {
         const userExists = await axios.get(`https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/checkUser/${state.user.attributes.sub}`,
@@ -142,59 +154,38 @@ export default new Vuex.Store({
         }
       },
 
-      async addGroup({state}, form) {
-        try {
-          await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/addGroup', 
-          {
-            groupId: form.groupId,
-            description: form.description,
-            groupUrl: "TEST_URL"
-          },
-          { headers: { 'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`}}
-      )
-        } catch (e) {
-          throw Error(e)
-        }
-      },
-
       async getUrl({state}) {
         try {
           let theUrl = await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/genUrl',
           { userId: state.user.sub},
           { headers: { 'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`}}
           )
-          return theUrl.data.uploadUrl
+          return theUrl.data
         } catch(e) {
           throw Error(e)
         }
       },
 
-      async putImage({state}, form) {
+      async putImage(_, theImage) {
         try {
-          // const uploadUrl = await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/genUrl',
-          //   { userId: state.user.sub},
-          //   { headers: { 'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`}}
-          // )
-          
-          // const result = await axios.put(`${uploadUrl.data.uploadUrl}`, theImage, 
-          // { headers: {'Content-Type': theImage.type}} 
-          // )
+            const result = await axios.put(`${uploadUrl.data.uploadUrl}`, theImage, 
+            { headers: {'Content-Type': theImage.type}} 
+          )
           console.log("Sending Put Image req:", form)
 
-          const result = await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/putImage',
-            {
-              userId: state.user.sub,
-              theImage: form.theImage,
-              groupId: form.groupId,
-              imageDesc: form.imageDesc
-            },
-            { headers: { 'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`, 'Content-Type': form.theImage.type}}
-          )
+          // const result = await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/putImage',
+          //   {
+          //     userId: state.user.sub,
+          //     groupId: form.groupId,
+          //     imageDesc: form.imageDesc
+          //   },
+          //   { headers: { 'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`}}
+          // )
           
           return result
 
         } catch(e) {
-          console.log("error  uploading image")
+          console.log("error uploading image")
           throw Error(e)
         }
       }

@@ -134,21 +134,21 @@ functions:
           method: post
           path: putImage
           cors: true
-          reqValidatorName: RequestBodyValidator
-          documentation: 
-            summary: Add an Image to s3 
-            description: Add an Image to s3 
-            requestModels: 
-              'application/json': PutImageRequest
+          # reqValidatorName: RequestBodyValidator
+          # documentation: 
+          #   summary: Add an Image to s3 
+          #   description: Add an Image to s3 
+          #   requestModels: 
+          #     'application/json': PutImageRequest
   
-  # GenUrl:
-  #   handler: src/lambda/s3/genUrl.handler
-  #   events:
-  #     - http:
-  #         authorizer: Auth
-  #         method: post
-  #         path: genUrl
-  #         cors: true
+  GenUrl:
+    handler: src/lambda/s3/genUrl.handler
+    events:
+      - http:
+          authorizer: Auth
+          method: post
+          path: genUrl
+          cors: true
 
 resources:
   Resources:

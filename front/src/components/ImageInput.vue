@@ -38,7 +38,7 @@
       <br />
       <br />
       <br />
-      <!-- {{groups}}: -->
+      the{{groups}}:::
       <br />
       <br />
       <br />
@@ -64,15 +64,23 @@ methods: {
     clearMssg() {
         this.mssg = ''
     },
-    addGroup() {
+    async addGroup() {
         if(this.newGroup !== '') {
-            this.groups.push(
-            {
+            const newGroup = {
                 description: `${this.newGroup} Images`,
-                groupId: this.groups.length,
+                groupId: this.groups.length.toString(),
                 groupUrl: null
-            })
+            }
+            
+            this.groups.push(newGroup)
+            console.log(this.groups)
+            
+            let result = await this.$store.dispatch('addGroup', newGroup)
+            console.log("Result is:", result)
+            
+            //add to dynamoDb Grouop table
             this.selectedGroup = ''
+            this.newGroup = ''
         } else {
             this.errorMssg = 'CANNOT BE BLANK'
         }
@@ -86,26 +94,34 @@ methods: {
         this.theImage = e.target.files[0]
     },
     async doUpload() {
-        if(this.theImage == null) {
-            this.mssg = 'No Image Selected'
-            return
-        }
-        if(this.imageDesc == '') {
-            this.mssg = 'No Image Description'
-            return
-        }
-        if(this.selectedGroup == ''){
-            this.mssg = 'No Group Selected'
-            return
-        }
+        // if(this.theImage == null) {
+        //     this.mssg = 'No Image Selected'
+        //     return
+        // }
+        // if(this.imageDesc == '') {
+        //     this.mssg = 'No Image Description'
+        //     return
+        // }
+        // if(this.selectedGroup == ''){
+        //     this.mssg = 'No Group Selected'
+        //     return
+        // }
         try {
-            const imageObject = {
-                groupId: this.getGroupsOptions.length-1,
-                theImage: this.theImage,
-                imageDesc: this.imageDesc,
-            }
-            console.log("The imageObject IS: ", imageObject)
-            await this.$store.dispatch('putImage', imageObject)
+            //check if group exists -  if not function will add
+            console.log("Selected group:", this.selectedGroup)
+
+            // const uploadUrl = await this.$store.dispatch('getUrl')
+            // console.log('uploadUrl is: ', uploadUrl)
+
+            // const result = await this.$store.dispatch('putImage', imageObject)
+
+            // const imageObject = {
+            //     groupId: this.getGroupsOptions.length-1,
+            //     imageDesc: this.imageDesc,
+            // }
+
+            // console.log("The imageObject result IS: ", result)
+            // await this.$store.dispatch('putImage', imageObject)
         } catch(e) {
             console.log("Error uploading Image", `${e.message}`)
             throw Error(e)

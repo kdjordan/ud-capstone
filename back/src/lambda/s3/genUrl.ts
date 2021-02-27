@@ -27,7 +27,8 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
       'Access-Control-Allow-Origin': '*'
     },
     body: JSON.stringify({
-      uploadUrl: url
+      uploadUrl: url,
+      imageId
     })
   }
 }

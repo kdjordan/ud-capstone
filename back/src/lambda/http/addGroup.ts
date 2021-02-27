@@ -21,7 +21,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     }
    
   } catch (e) {
-      console.log("ERROR adding USER in getGroups Lambda", e);
+      console.log("ERROR adding Group in Lambda", e);
       
       return {
         statusCode: 502,
