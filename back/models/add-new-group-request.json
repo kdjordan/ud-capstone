@@ -10,7 +10,7 @@
         "type": "string"
       },
       "groupUrl": {
-        "type": "null"
+        "type": "string"
       }
     },
     "required": ["groupId","description","groupUrl"],

@@ -27,15 +27,16 @@ export class GroupAccess {
 
     async addGroup(groupId: string, description: string, groupUrl: string): Promise<Group> {
       const newGroup = { groupId, description, groupUrl }
+      console.log("new group in groupAcccess: ", newGroup)
         try {
-            await this.docClient.put({
-              TableName: this.groupsTable,
-              Item: newGroup
-           }).promise()
-           console.log(newGroup)
-            let addedGroup = { ...newGroup }
+          await this.docClient.put({
+            TableName: this.groupsTable,
+            Item: newGroup
+          }).promise()
+        
+          let addedGroup = { ...newGroup }
             
-            return addedGroup
+          return addedGroup
         } catch (e) {
             console.log("ERROR adding group in ACCESS", e)
         }

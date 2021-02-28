@@ -9,7 +9,7 @@
         <div>
             <label for="group-select">Choose a group:</label>
                 <select v-model="selectedGroup" @change="clearMssg">
-                    <option v-for="(option, index) in groups" :key="index" >
+                    <option v-for="(option, index) in getGroups" :key="index" >
                         {{option.description}}
                         <!-- {{option}} -->
                     </option>
@@ -17,7 +17,7 @@
         </div>
         <div v-if="selectedGroup === '>--Add a New group--<'">
             <label for="groups">New Group</label>
-            <input type="text" name="groups" v-model="newGroup">
+            <input type="text" name="groups" v-model="newGroup" @change="clearMssg">
             <button @click="addGroup" class="add-button">ADD</button>
             <button class="add-button" @click="closeAddGroup">Cancel</button>
         </div>
@@ -37,12 +37,7 @@
       <br />
       <br />
       <br />
-      <br />
-      the{{groups}}:::
-      <br />
-      <br />
-      <br />
-      <br />
+      the{{getGroups}}:::
   </div>
 </template>
 
@@ -53,7 +48,6 @@ export default {
 data() {
     return {
         mssg: '',
-        groups: null,
         selectedGroup: '',
         newGroup: '',
         theImage: null,
@@ -65,24 +59,25 @@ methods: {
         this.mssg = ''
     },
     async addGroup() {
-        if(this.newGroup !== '') {
-            const newGroup = {
-                description: `${this.newGroup} Images`,
-                groupId: this.groups.length.toString(),
-                groupUrl: null
+       try {
+            if(this.newGroup !== '') {
+                const newGroup = {
+                    description: `${this.newGroup}`,
+                    groupId: this.groups.length.toString(),
+                    groupUrl: "none"
+                }
+                
+                //add to dynamoDb Group table
+                await this.$store.dispatch('addGroup', newGroup)
+                this.groups.push(newGroup)
+                
+                this.selectedGroup = ''
+                this.newGroup = ''
+            } else {
+                this.mssg = 'NEW GROUP CANNOT BE BLANK'
             }
-            
-            this.groups.push(newGroup)
-            console.log(this.groups)
-            
-            let result = await this.$store.dispatch('addGroup', newGroup)
-            console.log("Result is:", result)
-            
-            //add to dynamoDb Grouop table
-            this.selectedGroup = ''
-            this.newGroup = ''
-        } else {
-            this.errorMssg = 'CANNOT BE BLANK'
+        } catch(e) {
+            this.mssg = e
         }
     },
     closeAddGroup() {
@@ -129,11 +124,11 @@ methods: {
     }
 },
 computed: {
-    ...mapGetters(['getGroupsOptions'])
+    ...mapGetters(['getGroups'])
 },
-created() {
-    this.groups = this.getGroupsOptions
-}
+// created() {
+//     this.groups = this.getGroups
+// }
 }
 </script>
 

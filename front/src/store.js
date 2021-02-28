@@ -12,7 +12,7 @@ export default new Vuex.Store({
     user: null,
     modalActive: false,
     modalType: null,
-    groupsOptions: []
+    groups: []
   },
   plugins: [createPersistedState()],
   mutations: {
@@ -33,11 +33,14 @@ export default new Vuex.Store({
       state.user = null
     },
     setGroupsOptions(state, payload) {
-      state.groupsOptions = payload
+      state.groups = payload
+    },
+    addGroup(state, payload) {
+      state.groups.push(payload)
     }
   },
   getters: {
-    getGroupsOptions(state) {
+    getGroups(state) {
       return state.groupsOptions
     },
     getModalActive(state) {
@@ -73,11 +76,12 @@ export default new Vuex.Store({
       }
     },
 
-    async addGroup({state}, form) {
+    async addGroup({commit, state}, form) {
       try {
         console.log("adding group in store ", form)
         const result = await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/addGroup', form,
         { headers: { 'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`}})
+        commit('addGroup', form)
         return result
         // return true
       } catch (e) {

@@ -6,7 +6,6 @@ import { addGroup } from '../../businessLogic/groups'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const body = JSON.parse(event.body);
-    console.log(body)
   try {
     let group = await addGroup(body.groupId, body.description, body.groupUrl)
 

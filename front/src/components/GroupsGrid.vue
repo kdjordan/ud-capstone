@@ -4,7 +4,7 @@
       <div class="group-grid__container">
         <div v-for="(group, index) in groups" :key="index" class="group-grid__images">
             <img :src="`${group.groupUrl}`" class="group-grid__images--img" alt="">
-            {{group.description}}
+            {{group.description.toUpperCase()}}
         </div>
       </div>
   </div>
