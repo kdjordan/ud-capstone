@@ -11,7 +11,6 @@
                 <select v-model="selectedGroup" @change="clearMssg">
                     <option v-for="(option, index) in getGroups" :key="index" >
                         {{option.description}}
-                        <!-- {{option}} -->
                     </option>
                 </select>
         </div>
@@ -27,17 +26,9 @@
             <center class="mssg">{{mssg}}</center>
         </div>
       </form>
-      <br />
-      <br />
-      <br />
-      <br />
-      {{selectedGroup}}:
-      <br />
-      {{newGroup}}:
-      <br />
-      <br />
-      <br />
-      the{{getGroups}}:::
+      <div v-for="(group, index) in getGroups" :key="index" >
+          {{group}}<br/>
+      </div>
   </div>
 </template>
 
@@ -59,17 +50,17 @@ methods: {
         this.mssg = ''
     },
     async addGroup() {
+        const cleanedGroup = this.newGroup.trim().charAt(0).toUpperCase()+ this.newGroup.slice(1)
        try {
             if(this.newGroup !== '') {
-                const newGroup = {
-                    description: `${this.newGroup}`,
-                    groupId: this.groups.length.toString(),
+                const theGroup = {
+                    description: `${cleanedGroup}`,
+                    groupId: this.getGroups.length.toString(),
                     groupUrl: "none"
                 }
-                
+                console.log("passing ner group", theGroup)
                 //add to dynamoDb Group table
-                await this.$store.dispatch('addGroup', newGroup)
-                this.groups.push(newGroup)
+                await this.$store.dispatch('addGroup', theGroup)
                 
                 this.selectedGroup = ''
                 this.newGroup = ''
@@ -89,32 +80,47 @@ methods: {
         this.theImage = e.target.files[0]
     },
     async doUpload() {
-        // if(this.theImage == null) {
-        //     this.mssg = 'No Image Selected'
-        //     return
-        // }
-        // if(this.imageDesc == '') {
-        //     this.mssg = 'No Image Description'
-        //     return
-        // }
-        // if(this.selectedGroup == ''){
-        //     this.mssg = 'No Group Selected'
-        //     return
-        // }
+        if(this.theImage == null) {
+            this.mssg = 'No Image Selected'
+            return
+        }
+        if(this.imageDesc == '') {
+            this.mssg = 'No Image Description'
+            return
+        }
+        if(this.selectedGroup == ''){
+            this.mssg = 'No Group Selected'
+            return
+        }
         try {
-            //check if group exists -  if not function will add
-            console.log("Selected group:", this.selectedGroup)
+            //get signedUrl for upload to s3
+            const data = await this.$store.dispatch('getUrl')
 
-            // const uploadUrl = await this.$store.dispatch('getUrl')
-            // console.log('uploadUrl is: ', uploadUrl)
-
-            // const result = await this.$store.dispatch('putImage', imageObject)
-
+            console.log("data: ", data)
+            //create imageObject to pass to vuex to call putImage fn
             // const imageObject = {
-            //     groupId: this.getGroupsOptions.length-1,
-            //     imageDesc: this.imageDesc,
+            //     theImage: this.theImage,
+            //     imageType: this.theImage.type,
+            //     uploadUrl: data.uploadUrl,
+            //     imageId: data.imageId
             // }
+            const imageObject = {
+                theImage: this.theImage,
+                imageType: this.theImage.type,
+                uploadUrl: data.uploadUrl,
+            }
+            await this.$store.dispatch('putImage', imageObject)
 
+            const imageRecord = {
+                desription: this.imageDesc,
+                imageId: data.imageId,
+                userId: this.getUser.sub
+            }
+            console.log("imageRecord :", imageRecord)
+            // await this.$store.dispatch('createImageRecord', imamgeRecord)
+
+            //add record to Groups with url
+            // await this.$store.dispatch('addImageToGroup', )
             // console.log("The imageObject result IS: ", result)
             // await this.$store.dispatch('putImage', imageObject)
         } catch(e) {
@@ -124,7 +130,7 @@ methods: {
     }
 },
 computed: {
-    ...mapGetters(['getGroups'])
+    ...mapGetters(['getGroups', 'getUser'])
 },
 // created() {
 //     this.groups = this.getGroups

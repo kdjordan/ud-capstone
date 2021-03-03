@@ -22,9 +22,9 @@ custom:
       - name: AddGroup
         contentType: application/json
         schema: ${file(models/add-new-group-request.json)}
-      - name: PutImageRequest
+      - name: CreateImageRecordRequest
         contentType: application/json
-        schema: ${file(models/put-image-request.json)}
+        schema: ${file(models/create-image-record-request.json)}
 
     # Add the serverless-webpack plugin
 plugins:
@@ -126,20 +126,20 @@ functions:
             requestModels: 
               'application/json': AddUser
               
-  PutImage:
-    handler: src/lambda/http/putImage.handler
+  CreateImageRecord:
+    handler: src/lambda/http/createImageRecord.handler
     events:
       - http:
           authorizer: Auth
           method: post
-          path: putImage
+          path: createImageRecord
           cors: true
-          # reqValidatorName: RequestBodyValidator
-          # documentation: 
-          #   summary: Add an Image to s3 
-          #   description: Add an Image to s3 
-          #   requestModels: 
-          #     'application/json': PutImageRequest
+          reqValidatorName: RequestBodyValidator
+          documentation: 
+            summary: Add an Image to s3 
+            description: Add an Image to s3 
+            requestModels: 
+              'application/json': CreateImageRequest
   
   GenUrl:
     handler: src/lambda/s3/genUrl.handler

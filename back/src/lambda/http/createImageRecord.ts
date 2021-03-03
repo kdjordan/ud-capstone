@@ -1,32 +1,19 @@
 import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 
-// import { putImage } from '../../businessLogic/user'
-import { checkGroup } from '../../businessLogic/groups'
-
-// const bucketName = process.env.USER_IMAGES_BUCKET
-// const urlExpiration = process.env.SIGNED_URL_EXPIRATION
+// import { createImage } from '../../businessLogic/user'
+// import { getUploadUrl } from '../../dataLayer/userAccess'
 
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const body = JSON.parse(event.body);
     console.log(body)
+
   try {    
-    //make sure group exists
-    // console.log("Group Tyep ?:", typeof(body.groupId))
-    let groupExists = await checkGroup(body.groupId.toString())
-    console.log("Group Exists ?:", groupExists)
+    
+    // const uploadUrl = await getUploadUrl()
 
-    if(groupExists) {
-      console.log("The group is there")
-      //upload image and add image id to appropriate group images array
-    } else {
-      console.log("The group needs to be added")
-      //add new group
-      //upload image and add image id to appropriate group images array
-    }
-
-    // let result = await putImage(body.theImage)
+    // console.log('Upload URL is: ', uploadUrl)
 
     return {
       statusCode: 200,
@@ -52,5 +39,6 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
       
   }
 }
+
 
 

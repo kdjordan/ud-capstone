@@ -41,7 +41,7 @@ export default new Vuex.Store({
   },
   getters: {
     getGroups(state) {
-      return state.groupsOptions
+      return state.groups
     },
     getModalActive(state) {
       return state.modalActive
@@ -61,7 +61,6 @@ export default new Vuex.Store({
   actions: {
     async addNewUser({state}, form) {
       try {
-        console.log("The form in AddUser store: ", form)
         await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/addUser', 
             {
               userId: form.userId,
@@ -170,21 +169,27 @@ export default new Vuex.Store({
         }
       },
 
-      async putImage(_, theImage) {
+      async putImage(_, imageObject) {
+        console.log("ImageObj in store:", imageObject)
         try {
-            const result = await axios.put(`${uploadUrl.data.uploadUrl}`, theImage, 
-            { headers: {'Content-Type': theImage.type}} 
+            const result = await axios.put(`${imageObject.uploadUrl}`, imageObject.theImage, 
+            { headers: {'Content-Type': imageObject.type, }} 
           )
-          console.log("Sending Put Image req:", form)
+          return result
 
-          // const result = await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/putImage',
-          //   {
-          //     userId: state.user.sub,
-          //     groupId: form.groupId,
-          //     imageDesc: form.imageDesc
-          //   },
-          //   { headers: { 'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`}}
-          // )
+        } catch(e) {
+          console.log("error uploading image")
+          throw Error(e)
+        }
+      },
+
+      async createImageRecord(_, imageRecord) {
+        console.log("ImageObj in store:", imageRecordd)
+        try {
+          const result = await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/createImageRecord',
+            { imageRecord },
+            { headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`} }
+          )
           
           return result
 
@@ -193,7 +198,6 @@ export default new Vuex.Store({
           throw Error(e)
         }
       }
-    
   }
 
 }) // ends store
