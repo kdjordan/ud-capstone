@@ -183,18 +183,24 @@ export default new Vuex.Store({
         }
       },
 
-      async createImageRecord(_, imageRecord) {
-        console.log("ImageObj in store:", imageRecordd)
+      async createImageRecord({state}, imageRecord) {
+        console.log("going out", imageRecord)
+        
         try {
           const result = await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/createImageRecord',
-            { imageRecord },
-            { headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`} }
+            { description: imageRecord.description,
+              imageId: imageRecord.imageId,
+              userId: imageRecord.userId,
+              groupId: imageRecord.groupId
+            },
+            { headers: { 
+             'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`} 
+            }
           )
           
           return result
 
         } catch(e) {
-          console.log("error uploading image")
           throw Error(e)
         }
       }

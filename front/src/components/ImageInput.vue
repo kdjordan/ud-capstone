@@ -26,9 +26,9 @@
             <center class="mssg">{{mssg}}</center>
         </div>
       </form>
-      <div v-for="(group, index) in getGroups" :key="index" >
+      <!-- <div v-for="(group, index) in getGroups" :key="index" >
           {{group}}<br/>
-      </div>
+      </div> -->
   </div>
 </template>
 
@@ -58,7 +58,6 @@ methods: {
                     groupId: this.getGroups.length.toString(),
                     groupUrl: "none"
                 }
-                console.log("passing ner group", theGroup)
                 //add to dynamoDb Group table
                 await this.$store.dispatch('addGroup', theGroup)
                 
@@ -96,14 +95,6 @@ methods: {
             //get signedUrl for upload to s3
             const data = await this.$store.dispatch('getUrl')
 
-            console.log("data: ", data)
-            //create imageObject to pass to vuex to call putImage fn
-            // const imageObject = {
-            //     theImage: this.theImage,
-            //     imageType: this.theImage.type,
-            //     uploadUrl: data.uploadUrl,
-            //     imageId: data.imageId
-            // }
             const imageObject = {
                 theImage: this.theImage,
                 imageType: this.theImage.type,
@@ -111,22 +102,26 @@ methods: {
             }
             await this.$store.dispatch('putImage', imageObject)
 
-            const imageRecord = {
-                desription: this.imageDesc,
-                imageId: data.imageId,
-                userId: this.getUser.sub
-            }
-            console.log("imageRecord :", imageRecord)
-            // await this.$store.dispatch('createImageRecord', imamgeRecord)
+            const groupId = this.getGroupId(this.selectedGroup)
+            console.log("GroupId ", groupId)
 
             //add record to Groups with url
-            // await this.$store.dispatch('addImageToGroup', )
-            // console.log("The imageObject result IS: ", result)
-            // await this.$store.dispatch('putImage', imageObject)
+            const result = await this.$store.dispatch('createImageRecord', {
+                description: this.imageDesc,
+                imageId: data.imageId,
+                userId: this.getUser.sub,
+                groupId: groupId
+            })
+
+            console.log("The result IS: ", result)
         } catch(e) {
             console.log("Error uploading Image", `${e.message}`)
             throw Error(e)
         }
+    },
+    getGroupId(groupDesc) {
+        const group = this.getGroups.filter(group => groupDesc == group.description)
+        return group[0].groupId
     }
 },
 computed: {

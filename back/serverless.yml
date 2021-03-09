@@ -121,8 +121,8 @@ functions:
           cors: true
           reqValidatorName: RequestBodyValidator
           documentation: 
-            summary: Great a New User
-            description: Great a New User
+            summary: Add a New User
+            description: Add a New User
             requestModels: 
               'application/json': AddUser
               
@@ -136,10 +136,10 @@ functions:
           cors: true
           reqValidatorName: RequestBodyValidator
           documentation: 
-            summary: Add an Image to s3 
-            description: Add an Image to s3 
+            summary: Add an Image Record to groups table
+            description: Add an Image Record to groups table
             requestModels: 
-              'application/json': CreateImageRequest
+              'application/json': CreateImageRecordRequest
   
   GenUrl:
     handler: src/lambda/s3/genUrl.handler

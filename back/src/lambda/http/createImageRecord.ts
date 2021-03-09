@@ -3,11 +3,16 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } f
 
 // import { createImage } from '../../businessLogic/user'
 // import { getUploadUrl } from '../../dataLayer/userAccess'
+import { GroupAccess } from '../../dataLayer/groupAccess'
 
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    const body = JSON.parse(event.body);
-    console.log(body)
+    const groupAccess = new GroupAccess()
+
+    const {description, imageId, userId, groupId} = JSON.parse(event.body)
+
+    const result = groupAccess.createImageRecord(description, imageId, userId, groupId)
+    console.log(result)
 
   try {    
     
@@ -22,7 +27,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
         'Access-Control-Allow-Credentials': true
 
       },
-      body: JSON.stringify({items: true})
+      body: JSON.stringify({items: result})
     }
    
   } catch (e) {
@@ -39,6 +44,8 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
       
   }
 }
+
+
 
 
 
