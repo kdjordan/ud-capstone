@@ -132,15 +132,10 @@ data() {
          async login() {
             try {
                 this.buttonDisabled = true
-                const user = await this.$store.dispatch('login', this.loginForm)
-                if(user.attributes.sub !== '') {
-                    //check to see if user is in DynamoDB - protected route using sls Authorizer
-                    const userExists = await this.$store.dispatch('checkUser')
-                    //if user does not exist - add to DynamoDB
-                    if (!userExists) {
-                        await this.$store.dispatch('addNewUser', {...this.registeredUser})
-                    }
-                }
+                await this.$store.dispatch('login', this.loginForm)
+                this.registeredUser.userId = this.getUser.sub
+                //add user to DynamoDB = will not add id user already exists
+                await this.$store.dispatch('addNewUser', {...this.registeredUser})
                 this.message = 'Success - Redirecting to your profile page'
                 this.theFunction = 'none'
                 setTimeout(() => {
@@ -167,7 +162,8 @@ data() {
     },
     computed: {
         ...mapGetters([
-            'getModalType'
+            'getModalType',
+            'getUser'
         ]),
     }
 

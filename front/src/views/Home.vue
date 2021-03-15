@@ -4,7 +4,7 @@
         <h2>Welcome to the simple Image Sharing App</h2>
         <p><span @click="doModal('signup')">Sign Up</span> to join or <span @click="doModal('signin')">Sign</span> in if you're already a member !</p>
     </div>
-    <GroupsGrid />
+    <!-- <GroupsGrid /> -->
   </div>
 </template>
 

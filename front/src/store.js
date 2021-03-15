@@ -126,6 +126,7 @@ export default new Vuex.Store({
         try {
           const user = await Auth.signIn(form.email, form.password)
           commit('setUser', user)
+          console.log("User in store is: ", user)
           const session = await Auth.currentSession()
           commit('setSession', session)
           return user

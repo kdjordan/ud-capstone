@@ -16,7 +16,7 @@ export class UserAccess {
  
     constructor(
       private readonly docClient: DocumentClient = createDynamoDBClient(),
-      private readonly userTable = process.env.USER_TABLE
+      private readonly sisTable = process.env.SIS_TABLE
       ) {
     }
 
@@ -24,9 +24,17 @@ export class UserAccess {
         const newUser = { userId, username, email }
         try {
             await this.docClient.put({
-               TableName: this.userTable,
-               Item: newUser
-           }).promise()
+               TableName: this.sisTable,
+               Item: {
+                 PK: `USER#${userId}`,
+                 SK: `USER#${userId}`,
+                 userId:  userId,
+                 userName: username,
+                 email: email
+                },
+               ConditionExpression : 'attribute_not_exists(PK)'
+            },
+           ).promise()
 
         let addedUser  = {
              ...newUser 
@@ -40,7 +48,7 @@ export class UserAccess {
     async checkUser(userId: string): Promise<Boolean> {
         try {
             const result = await this.docClient.query({
-               TableName: this.userTable,
+               TableName: this.sisTable,
                KeyConditionExpression: 'userId = :userId',
                 ExpressionAttributeValues: { ':userId': userId }
            }).promise()
