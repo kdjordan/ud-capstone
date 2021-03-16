@@ -89,12 +89,12 @@ functions:
             requestModels: 
               'application/json': AddGroup
 
-  GetGroups :
+  GetImages :
     handler: src/lambda/http/getGroups.handler
     events: 
       - http:
           method: get
-          path: getGroups
+          path: getImages
           cors: true
 
   CheckUser: 

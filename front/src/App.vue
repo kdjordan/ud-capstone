@@ -7,16 +7,14 @@
 </template>
 
 <script>
-import Header from './components/Header';
-import GroupsGrid from './components/GroupsGrid';
-import ImageInput from './components/ImageInput';
-import Modal from './components/Modal';
+import Header from './components/Header'
+import ImageInput from './components/ImageInput'
+import Modal from './components/Modal'
 import { mapGetters } from 'vuex' 
 
 export default {
   components: {
     Header,
-    GroupsGrid,
     ImageInput,
     Modal
   },

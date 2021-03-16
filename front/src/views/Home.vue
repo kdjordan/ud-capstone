@@ -4,20 +4,20 @@
         <h2>Welcome to the simple Image Sharing App</h2>
         <p><span @click="doModal('signup')">Sign Up</span> to join or <span @click="doModal('signin')">Sign</span> in if you're already a member !</p>
     </div>
-    <!-- <GroupsGrid /> -->
+    <ImagesGrid />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import Header from '@/components/Header';
-import GroupsGrid from '@/components/GroupsGrid'
+import ImagesGrid from '@/components/ImagesGrid'
 
 export default {
   name: 'home',
   components: {
     Header,
-    GroupsGrid
+    ImagesGrid
   },
   methods :{
     doModal(type) {

@@ -3,7 +3,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } f
 
 // import { createImage } from '../../businessLogic/user'
 // import { getUploadUrl } from '../../dataLayer/userAccess'
-import { GroupAccess } from '../../dataLayer/groupAccess'
+import { GroupAccess } from '../../dataLayer/imageAccess'
 
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {

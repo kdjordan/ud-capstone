@@ -12,7 +12,7 @@ export default new Vuex.Store({
     user: null,
     modalActive: false,
     modalType: null,
-    groups: []
+    images: []
   },
   plugins: [createPersistedState()],
   mutations: {
@@ -163,6 +163,16 @@ export default new Vuex.Store({
           let theUrl = await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/genUrl',
           { userId: state.user.sub},
           { headers: { 'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`}}
+          )
+          return theUrl.data
+        } catch(e) {
+          throw Error(e)
+        }
+      },
+
+      async getImages({state}) {
+        try {
+          const images = await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/getImages',
           )
           return theUrl.data
         } catch(e) {
