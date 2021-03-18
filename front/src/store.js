@@ -185,9 +185,7 @@ export default new Vuex.Store({
         try {
             const result = await axios.put(`${imageObject.uploadUrl}`, imageObject.theImage, 
             { headers: {'Content-Type': imageObject.type, }} 
-          )
-          return result
-
+            )
         } catch(e) {
           console.log("error uploading image")
           throw Error(e)

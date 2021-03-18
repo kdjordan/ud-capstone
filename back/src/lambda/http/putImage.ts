@@ -2,12 +2,12 @@ import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 
-import { addGroup } from '../../businessLogic/images'
+import { putImage } from '../../businessLogic/images'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const body = JSON.parse(event.body);
   try {
-    let group = await addGroup(body.groupId, body.description, body.groupUrl)
+    let image = await putImage(body.groupId, body.description, body.groupUrl)
 
     return {
       statusCode: 200,
@@ -16,7 +16,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
         'Access-Control-Allow-Credentials': true
 
       },
-      body: JSON.stringify({group})
+      body: JSON.stringify({image})
     }
    
   } catch (e) {

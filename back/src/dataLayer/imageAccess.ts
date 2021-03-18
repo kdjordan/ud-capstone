@@ -9,7 +9,8 @@ export class ImageAccess {
  
     constructor(
       private readonly docClient: DocumentClient = createDynamoDBClient(),
-      private readonly sisTable = process.env.SIS_TABLE
+      private readonly sisTable = process.env.SIS_TABLE,
+      private readonly imagesBucket = process.env.USER_IMAGES_BUCKET
       ) {
     }
 
@@ -26,23 +27,24 @@ export class ImageAccess {
         }
        }
 
-    async putImage(description: string, imageId: string, userId: string, createdAt: string): Promise<Image> {
-        try {
-            const image = await this.docClient.put({
-               TableName: this.sisTable,
-               Item: {
-                PK: `USER#${userId}`,
-                SK: `USER#${imageId}`,
-                createdAt:  createdAt,
-                desciption: description,
-               }
-           }).promise()
-        //    console.log(iamges)
-            return image as Image
-        } catch (e) {
-            return e
-        }
-       }
+    // async putImage(description: string, PK: string, imageId: string createdAt: string): Promise<Image> {
+    //     try {
+    //         const image = await this.docClient.update({
+    //            TableName: this.sisTable,
+    //            Key: { PK },
+
+    //           //  Item: {
+    //           //   SK: `USER#${imageId}`,
+    //           //   createdAt:  createdAt,
+    //           //   desciption: description,
+    //            }
+    //        }).promise()
+    //     //    console.log(iamges)
+    //         return image as Image
+    //     } catch (e) {
+    //         return e
+    //     }
+    //    }
 
     // async addGroup(groupId: string, description: string, groupUrl: string): Promise<Group> {
     //   const newGroup = { groupId, description, groupUrl }
@@ -61,33 +63,33 @@ export class ImageAccess {
     //    }
 
 
-    //    async createImageRecord(description: string, imageId: string, userId: string, groupId: string, createdAt: string) {
-    //      const attachmentUrl = createAttachmentUrl(this.imagesBucket, imageId)
-    //      console.log('calling checkGroup in: ', description, imageId, userId, groupId)
+       async createImageRecord(description: string, imageId: string, userId: string, groupId: string, createdAt: string) {
+         const attachmentUrl = createAttachmentUrl(this.imagesBucket, imageId)
+         console.log('calling checkGroup in: ', description, imageId, userId, groupId)
 
-    //      try {
-    //        const result = await this.docClient.update({
-    //            TableName: this.groupsTable,
-    //            Key: {
-    //              groupId
-    //            },
-    //            UpdateExpression: "set #theImages = {imageUrl :iurl, owner: :uid, description: :desc, createdAt: :added",
-    //            ExpressionAttributeNames: {
-    //              ":iurl": attachmentUrl,
-    //              ":uid": userId,
-    //              ":desc": description,
-    //              ":added": createdAt
-    //            },
-    //            ReturnValues: "UPDATED_NEW"
-    //          })
-    //          .promise()
+         try {
+           const result = await this.docClient.update({
+               TableName: this.sisTable,
+               Key: {
+                 groupId
+               },
+               UpdateExpression: "set #theImages = {imageUrl :iurl, owner: :uid, description: :desc, createdAt: :added",
+               ExpressionAttributeNames: {
+                 ":iurl": attachmentUrl,
+                 ":uid": userId,
+                 ":desc": description,
+                 ":added": createdAt
+               },
+               ReturnValues: "UPDATED_NEW"
+             })
+             .promise()
 
-    //          return result
+             return result
 
-    //      } catch(e) {
-    //         return e 
-    //      }
-    //   }
+         } catch(e) {
+            return e 
+         }
+      }
       
 }
 

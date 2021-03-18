@@ -1,34 +1,22 @@
 <template>
   <div class="image-input">
-      <h3>Upload a New Image</h3>
+      <h3>Click Pencil to Upload a New Image</h3>
       <form @submit.prevent="doUpload">
-        <div>
-            <label for="imageDesc">Image Description</label>
-            <input type="text" name="imageDesc" v-model="imageDesc">
-        </div>
-        <div>
-            <label for="group-select">Choose a group:</label>
-                <select v-model="selectedGroup" @change="clearMssg">
-                    <option v-for="(option, index) in getGroups" :key="index" >
-                        {{option.description}}
-                    </option>
-                </select>
-        </div>
-        <div v-if="selectedGroup === '>--Add a New group--<'">
-            <label for="groups">New Group</label>
-            <input type="text" name="groups" v-model="newGroup" @change="clearMssg">
-            <button @click="addGroup" class="add-button">ADD</button>
-            <button class="add-button" @click="closeAddGroup">Cancel</button>
-        </div>
-        <input type="file" accept="image/*" @change="uploadImage($event)">
-        <button class="add-button" type ="submit" :disabled="mssg !== ''">Upload</button>
-        <div v-if="mssg !== ''">
-            <center class="mssg">{{mssg}}</center>
-        </div>
+        <div class="pencil" @click="togglePanel"></div>
+            <div v-if="panelActive" class="image-input__panel">
+                <div>
+                    <label for="imageDesc">Image Description</label>
+                    <input type="text" name="imageDesc" v-model="imageDesc">
+                </div>
+                
+                <input type="file" accept="image/*" @change="uploadImage($event)">
+                <button class="add-button" type ="submit" :disabled="mssg !== ''">Upload</button>
+                <div v-if="mssg !== ''">
+                    <center class="mssg">{{mssg}}</center>
+                </div>
+            </div>
       </form>
-      <!-- <div v-for="(group, index) in getGroups" :key="index" >
-          {{group}}<br/>
-      </div> -->
+      <!-- {{panelActive}} -->
   </div>
 </template>
 
@@ -39,40 +27,17 @@ export default {
 data() {
     return {
         mssg: '',
-        selectedGroup: '',
-        newGroup: '',
         theImage: null,
-        imageDesc: ''
+        imageDesc: '',
+        panelActive: false
     }
 },
 methods: {
+    togglePanel() {
+        this.panelActive = !this.panelActive
+    },
     clearMssg() {
         this.mssg = ''
-    },
-    async addGroup() {
-        const cleanedGroup = this.newGroup.trim().charAt(0).toUpperCase()+ this.newGroup.slice(1)
-       try {
-            if(this.newGroup !== '') {
-                const theGroup = {
-                    description: `${cleanedGroup}`,
-                    groupId: this.getGroups.length.toString(),
-                    groupUrl: "none"
-                }
-                //add to dynamoDb Group table
-                await this.$store.dispatch('addGroup', theGroup)
-                
-                this.selectedGroup = ''
-                this.newGroup = ''
-            } else {
-                this.mssg = 'NEW GROUP CANNOT BE BLANK'
-            }
-        } catch(e) {
-            this.mssg = e
-        }
-    },
-    closeAddGroup() {
-        this.selectedGroup = ''
-        this.errorMssg = ''
     },
     uploadImage(e) {
         this.clearMssg()
@@ -87,10 +52,6 @@ methods: {
             this.mssg = 'No Image Description'
             return
         }
-        if(this.selectedGroup == ''){
-            this.mssg = 'No Group Selected'
-            return
-        }
         try {
             //get signedUrl for upload to s3
             const data = await this.$store.dispatch('getUrl')
@@ -100,10 +61,8 @@ methods: {
                 imageType: this.theImage.type,
                 uploadUrl: data.uploadUrl,
             }
+            console.log("url is ", data)
             await this.$store.dispatch('putImage', imageObject)
-
-            const groupId = this.getGroupId(this.selectedGroup)
-            console.log("GroupId ", groupId)
 
             //add record to Groups with url
             const result = await this.$store.dispatch('createImageRecord', {
@@ -124,16 +83,27 @@ methods: {
         return group[0].groupId
     }
 },
-computed: {
-    ...mapGetters(['getGroups', 'getUser'])
-},
-// created() {
-//     this.groups = this.getGroups
-// }
+    computed: {
+        ...mapGetters(['getUser'])
+    },
 }
 </script>
 
 <style lang="scss">
+.pencil {
+    cursor: pointer;
+    width:50px;
+    height:50px;
+    background-image: url(../assets/pencil.svg);
+    margin: 2rem auto;
+    // margin-top: 2rem;
+    transform: rotate(0deg);
+    transition: all .5s ease;
+
+    &:hover {
+        transform: rotate(360deg);
+    }
+}
 .image-input {
     display: flex;
     flex-direction: column;
@@ -148,6 +118,10 @@ computed: {
 
     & input {
         margin: 1rem 0;
+    }
+
+    &__panel {
+        margin-bottom: 2rem;
     }
 }
 

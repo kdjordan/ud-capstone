@@ -5,9 +5,11 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } f
 import { getImage } from '../../businessLogic/images'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    console.log(event)
+
+    const userId = event.pathParameters.userId
+    
   try {
-    let images = await getImage()
+    let images = await getImage(userId)
 
     return {
       statusCode: 200,

@@ -9,11 +9,11 @@ export async function getImage(userId: string): Promise<Image[]> {
     return await imageAccess.getImage(userId)
   }
   
-export async function putImage(description: string, imageId: string, userId: string, createdAt: string): Promise<Image> {
-    return await imageAccess.putImage(description, imageId, userId, createdAt)
-  }
-
-// export async function createImageRecord(description: string, imageId: string, userId: string, groupId: string): Promise<any> {
-//     const  createdDate = new Date().toISOString()
-//     return await groupAccess.createImageRecord(description, imageId, userId, groupId, createdDate)
+// export async function putImage(description: string, userId: string,  createdAt: string): Promise<Image> {
+//     return await imageAccess.putImage(description, userId, createdAt)
 //   }
+
+export async function createImageRecord(description: string, imageId: string, userId: string, groupId: string): Promise<any> {
+    const  createdDate = new Date().toISOString()
+    return await imageAccess.createImageRecord(description, imageId, userId, groupId, createdDate)
+  }
