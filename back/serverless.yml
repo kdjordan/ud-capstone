@@ -28,6 +28,7 @@ plugins:
   - serverless-webpack
   - serverless-reqvalidator-plugin
   - serverless-aws-documentation
+  - serverless-iam-roles-per-function
 
 provider:
   name: aws
@@ -47,7 +48,7 @@ provider:
     SIGNED_URL_EXPIRATION: 300
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
     
-  # iamRoleStatements:
+  iamRoleStatements:
   #   - Effect: Allow
   #     Action:
   #       - dynamodb:Query
@@ -56,11 +57,10 @@ provider:
   #       - dynamodb:GetItem
   #       - dynamodb:UpdateItem
   #     Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.SIS_TABLE}
-  #   - Effect: Allow
-  #     Action:
-  #       - s3:PutObject
-  #       - s3:GetObject
-  #     Resource: arn:aws:s3:::${self:provider.environment.USER_IMAGES_BUCKET}/*
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+      Resource: arn:aws:s3:::${self:provider.environment.USER_IMAGES_BUCKET}/*
   
   apiGateway:
     minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
@@ -70,21 +70,21 @@ functions:
   Auth:
     handler: src/lambda/auth/authorizer.handler
 
-  GetImages :
-    handler: src/lambda/http/getImages.handler
+  GetAllImages :
+    handler: src/lambda/http/getAllImages.handler
     events: 
       - http:
           method: get
-          path: getImages
+          path: getAllImages
           cors: true
+    iamRoleStatements:
+      - Effect: Allow        
+        Action:
+          - dynamodb:Query        
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.SIS_TABLE}
 
   AddUser:
     handler: src/lambda/http/addUser.handler
-    iamRoleStatements:
-      - Effect: "Allow"        
-        Action:
-          - dynamodb:PutItem        
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.SIS_TABLE}
     events:
       - http:
           authorizer: Auth
@@ -97,11 +97,16 @@ functions:
             description: Add a New User
             requestModels: 
               'application/json': AddUser
+    iamRoleStatements:
+      - Effect: Allow        
+        Action:
+          - dynamodb:PutItem        
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.SIS_TABLE}
               
   CreateImageRecord:
     handler: src/lambda/http/createImageRecord.handler
     iamRoleStatements:
-      - Effect: "Allow"        
+      - Effect: Allow        
         Action:
           - dynamodb:PutItem        
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.SIS_TABLE}

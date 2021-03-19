@@ -12,7 +12,8 @@ export default new Vuex.Store({
     user: null,
     modalActive: false,
     modalType: null,
-    images: []
+    images: [],
+    allImages: []
   },
   plugins: [createPersistedState()],
   mutations: {
@@ -24,6 +25,9 @@ export default new Vuex.Store({
       state.isAuthenticated = true
       state.user = user
     },
+    setAllImages(state, payload) {
+      state.allImages = payload
+    },
     setSession(state, session) {
       state.session = session
       state.user.Session = session
@@ -32,19 +36,13 @@ export default new Vuex.Store({
       state.isAuthenticated = false
       state.user = null
     },
-    setGroupsOptions(state, payload) {
-      state.groups = payload
-    },
-    addGroup(state, payload) {
-      state.groups.push(payload)
-    }
   },
   getters: {
-    getGroups(state) {
-      return state.groups
-    },
     getModalActive(state) {
       return state.modalActive
+    },
+    getAllImages(state) {
+      return state.allImages
     },
     getModalType(state) {
       return state.modalType
@@ -146,7 +144,18 @@ export default new Vuex.Store({
         try {
           const images = await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/getImages',
           )
-          return theUrl.data
+          return images.data
+        } catch(e) {
+          throw Error(e)
+        }
+      },
+
+      async getAllImages({commit}) {
+        try {
+          const images = await axios.get('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/getAllImages',
+          )
+          commit('setAllImages', images)
+          return images.data
         } catch(e) {
           throw Error(e)
         }

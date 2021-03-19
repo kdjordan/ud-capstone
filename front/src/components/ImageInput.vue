@@ -63,7 +63,7 @@ methods: {
             }
             console.log("url is ", data)
             //aadd image to S3
-            // await this.$store.dispatch('putImage', imageObject)
+            await this.$store.dispatch('putImage', imageObject)
 
             //add record to Groups with url
             const result = await this.$store.dispatch('createImageRecord', {

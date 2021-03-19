@@ -41,7 +41,8 @@ export class UserAccess {
         }
             return addedUser 
         } catch (e) {
-            console.log("ERROR adding in ACCESS", e)
+          console.log("ERROR adding in ACCESS", e)
+          return e
         }
        }
 

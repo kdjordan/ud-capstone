@@ -2,16 +2,13 @@ import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 
 import { createImageRecord } from '../../businessLogic/images'
-// import { getUploadUrl } from '../../dataLayer/userAccess'
-// import { ImageAccess } from '../../dataLayer/imageAccess'
-
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
 
     const {description, imageId, userId} = JSON.parse(event.body)
 
     const result = await createImageRecord(description, imageId, userId)
-    console.log(result)
+    console.log("result in createImage", result)
 
   try {    
     

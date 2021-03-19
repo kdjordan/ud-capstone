@@ -2,10 +2,10 @@
   <div class="image-grid">
       <h2><center>Here are our user Images</center></h2>
       <div class="image-grid__container">
-        <div v-for="(image, index) in groups" :key="index" class="image-grid__images">
+        <!-- <div v-for="(image, index) in groups" :key="index" class="image-grid__images">
             <img :src="`${group.groupUrl}`" class="images-grid__images--img" alt="">
             {{group.description.toUpperCase()}}
-        </div>
+        </div> -->
       </div>
   </div>
 </template>
@@ -21,8 +21,8 @@ export default {
     },
     async created() {
         try{
-            // const theImages = await axios.get('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/getImages')
-            const theImages = await this.$store.dispatch('getImages')
+            // const theImages = await axios.get('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/getAllImages')
+            const theImages = await this.$store.dispatch('getAllImages')
 
             this.images = theImages
         } catch(e) {

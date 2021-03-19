@@ -14,16 +14,46 @@ export class ImageAccess {
       ) {
     }
 
-    async getImage(userId: string): Promise<Image[]> {
+    async getImage(userId: string): Promise<Image> {
         try {
-            const images = await this.docClient.scan({
-               TableName: this.sisTable,
+          const theImage = {
+            imageId: "888",
+            description: "holder",
+            iamgeUrl: "URL"
+          }
+        //     const images = await this.docClient.scan({
+        //        TableName: this.sisTable,
+        //        KeyConditionExpression='#PK begins_with(USER#) ',
+        //        ExpressionAttributeNames = {
+        //         "#PK": "PK",
+        //       }  
+        //    }).promise()
+        // //    console.log(iamges)
+        //     const items = images.Items
+        //     return items as Image[]
+          return theImage as Image
+        } catch (e) {
+            console.log('Error searching for the image', e)
+            return e
+        }
+       }
+
+    async getAllImages(): Promise<Image[]> {
+        try {
+            const images = await this.docClient.query({
+              TableName: this.sisTable,
+              KeyConditionExpression: 'PK = PK begins_with(PK, :primary_key)',
+              ExpressionAttributeValues: {
+                ":primary_key": "USER#",
+              }
+                
            }).promise()
-        //    console.log(iamges)
+           console.log("the images are", images)
             const items = images.Items
             return items as Image[]
         } catch (e) {
-            return e
+          console.log('Error getting all images: ', e)
+          throw Error(e)
         }
        }
 
@@ -58,21 +88,11 @@ export class ImageAccess {
 
        async createImageRecord(description: string, imageId: string, userId: string) {
          const attachmentUrl = createAttachmentUrl(this.imagesBucket, imageId)
-         console.log('calling createImageRecord', description, imageId, userId, attachmentUrl)
          const  createdDate = new Date().toISOString()
 
          try {
            const result = await this.docClient.put({
                TableName: this.sisTable,
-              //  Key: {
-              //    PK: `USER#${userId}`,
-              //    SK: `IMAGE#${imageId}`
-              //  },
-              // UpdateExpression: "SET SK = :d",
-              //  ExpressionAttributeValues: {
-              //   ":d" : `IMAGE#${imageId}`
-              // },
-              // ReturnValues:"UPDATED_NEW"
                Item: {
                 PK: `USER#${userId}`,
                 SK: `IMAGE#${imageId}`,
@@ -81,26 +101,6 @@ export class ImageAccess {
                 createdDate: createdDate,
                 imageUrl: attachmentUrl
                }
-              //  Key: {
-              //   PK: `USER#${userId}`
-              //  },
-              //  ConditionExpression : "attribute_exists(PK)",
-              //  UpdateExpression: "ADD #SK = :keyImageId",
-              //  ExpressionAttributeValues: {
-              //   "#SK": `IMAGE#${userId}`,
-              //   ":keyImageId" : "test"
-              // },
-
-
-              //  Item: {
-                
-              //   SK : `IMAGE#${imageId}`,
-              //   description: description,
-              //   imageId: imageId,
-              //   createdDate: createdDate,
-              //   imageUrl: attachmentUrl
-              //  },
-                      
              }).promise()
             
              return result

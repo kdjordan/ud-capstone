@@ -1,15 +1,13 @@
 import 'source-map-support/register'
 
-import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
+import { APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 
-import { getImage } from '../../businessLogic/images'
+import { getAllImages } from '../../businessLogic/images'
 
-export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-
-    const userId = event.pathParameters.userId
-
+export const handler: APIGatewayProxyHandler = async (): Promise<APIGatewayProxyResult> => {
+    
   try {
-    let images = await getImage(userId)
+    let images = await getAllImages()
 
     return {
       statusCode: 200,
@@ -22,7 +20,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     }
    
   } catch (e) {
-      console.log("ERROR getting all images in getGroups Lambda", e);
+      console.log("ERROR getting Groups in getGroups Lambda", e);
       
       return {
         statusCode: 502,
