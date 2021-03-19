@@ -39,6 +39,16 @@ export class ImageAccess {
     //           //   desciption: description,
     //            }
     //        }).promise()
+
+
+    // UpdateExpression: "set #theImages = {imageUrl :iurl, owner: :uid, description: :desc, createdAt: :added",
+    //            ExpressionAttributeNames: {
+    //              ":iurl": attachmentUrl,
+    //              ":uid": userId,
+    //              ":desc": description,
+    //              ":added": createdDate
+    //            },
+    //            ReturnValues: "UPDATED_NEW"
     //     //    console.log(iamges)
     //         return image as Image
     //     } catch (e) {
@@ -46,47 +56,57 @@ export class ImageAccess {
     //     }
     //    }
 
-    // async addGroup(groupId: string, description: string, groupUrl: string): Promise<Group> {
-    //   const newGroup = { groupId, description, groupUrl }
-    //     try {
-    //       await this.docClient.put({
-    //         TableName: this.groupsTable,
-    //         Item: newGroup
-    //       }).promise()
-        
-    //       let addedGroup = { ...newGroup }
-            
-    //       return addedGroup
-    //     } catch (e) {
-    //         return e
-    //     }
-    //    }
-
-
-       async createImageRecord(description: string, imageId: string, userId: string, groupId: string, createdAt: string) {
+       async createImageRecord(description: string, imageId: string, userId: string) {
          const attachmentUrl = createAttachmentUrl(this.imagesBucket, imageId)
-         console.log('calling checkGroup in: ', description, imageId, userId, groupId)
+         console.log('calling createImageRecord', description, imageId, userId, attachmentUrl)
+         const  createdDate = new Date().toISOString()
 
          try {
-           const result = await this.docClient.update({
+           const result = await this.docClient.put({
                TableName: this.sisTable,
-               Key: {
-                 groupId
-               },
-               UpdateExpression: "set #theImages = {imageUrl :iurl, owner: :uid, description: :desc, createdAt: :added",
-               ExpressionAttributeNames: {
-                 ":iurl": attachmentUrl,
-                 ":uid": userId,
-                 ":desc": description,
-                 ":added": createdAt
-               },
-               ReturnValues: "UPDATED_NEW"
-             })
-             .promise()
+              //  Key: {
+              //    PK: `USER#${userId}`,
+              //    SK: `IMAGE#${imageId}`
+              //  },
+              // UpdateExpression: "SET SK = :d",
+              //  ExpressionAttributeValues: {
+              //   ":d" : `IMAGE#${imageId}`
+              // },
+              // ReturnValues:"UPDATED_NEW"
+               Item: {
+                PK: `USER#${userId}`,
+                SK: `IMAGE#${imageId}`,
+                description: description,
+                imageId: imageId,
+                createdDate: createdDate,
+                imageUrl: attachmentUrl
+               }
+              //  Key: {
+              //   PK: `USER#${userId}`
+              //  },
+              //  ConditionExpression : "attribute_exists(PK)",
+              //  UpdateExpression: "ADD #SK = :keyImageId",
+              //  ExpressionAttributeValues: {
+              //   "#SK": `IMAGE#${userId}`,
+              //   ":keyImageId" : "test"
+              // },
 
+
+              //  Item: {
+                
+              //   SK : `IMAGE#${imageId}`,
+              //   description: description,
+              //   imageId: imageId,
+              //   createdDate: createdDate,
+              //   imageUrl: attachmentUrl
+              //  },
+                      
+             }).promise()
+            
              return result
 
          } catch(e) {
+           console.log('Error putting image in createImageRecord: ', e)
             return e 
          }
       }

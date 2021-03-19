@@ -11,11 +11,8 @@
       },
       "userId": {
         "type": "string"
-      },
-      "groupId": {
-        "type": "string"
       }
     },
-    "required": ["description","imageId","userId","groupId"],
+    "required": ["description","imageId","userId"],
     "additionalProperties": false
 }

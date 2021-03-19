@@ -41,43 +41,9 @@ export class UserAccess {
         }
             return addedUser 
         } catch (e) {
-            console.log("ERROR getting groups in ACCESS", e)
+            console.log("ERROR adding in ACCESS", e)
         }
        }
-
-    async checkUser(userId: string): Promise<Boolean> {
-        try {
-            const result = await this.docClient.query({
-               TableName: this.sisTable,
-               KeyConditionExpression: 'userId = :userId',
-                ExpressionAttributeValues: { ':userId': userId }
-           }).promise()
-
-        if(result.Items.length == 0) { return false } 
-        else { return true }
-
-        } catch (e) {
-            console.log("ERROR getting groups in ACCESS", e)
-        }
-    }
-
-    async createImage(image: object): Promise<Boolean> {
-        //getSignedUrl
-            console.log(image)
-        // try {
-        //     const result = await this.docClient.query({
-        //        TableName: this.userTable,
-        //        KeyConditionExpression: 'userId = :userId',
-        //         ExpressionAttributeValues: { ':userId': userId }
-        //    }).promise()
-
-        // if(result.Items.length == 0) { return false } 
-        // else { return true }
-        return true
-        // } catch (e) {
-        //     console.log("ERROR getting groups in ACCESS", e)
-        // }
-    }
 
     async getUploadUrl() {
         const imageId = uuid.v4()

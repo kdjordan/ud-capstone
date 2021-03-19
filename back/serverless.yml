@@ -19,9 +19,6 @@ custom:
       - name: AddUser
         contentType: application/json
         schema: ${file(models/add-new-user-request.json)}
-      - name: AddGroup
-        contentType: application/json
-        schema: ${file(models/add-new-group-request.json)}
       - name: CreateImageRecordRequest
         contentType: application/json
         schema: ${file(models/create-image-record-request.json)}
@@ -44,27 +41,26 @@ provider:
     apiGateway: true
 
   environment:
-    # USER_TABLE: sisUsers-${self:provider.stage}
-    # GROUPS_TABLE: sisGroups-${self:provider.stage}
     SIS_TABLE: sis-${self:provider.stage}
     USER_IMAGES_BUCKET: sis-images-${self:provider.stage}
     USER_POOL_ID: us-west-2_S9oCYx1ff
     SIGNED_URL_EXPIRATION: 300
-    # AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
     
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - dynamodb:Query
-        - dynamodb:PutItem
-        - dynamodb:Scan
-        - dynamodb:GetItem
-      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.SIS_TABLE}
-    - Effect: Allow
-      Action:
-        - s3:PutObject
-        - s3:GetObject
-      Resource: arn:aws:s3:::${self:provider.environment.USER_IMAGES_BUCKET}/*
+  # iamRoleStatements:
+  #   - Effect: Allow
+  #     Action:
+  #       - dynamodb:Query
+  #       - dynamodb:PutItem
+  #       - dynamodb:Scan
+  #       - dynamodb:GetItem
+  #       - dynamodb:UpdateItem
+  #     Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.SIS_TABLE}
+  #   - Effect: Allow
+  #     Action:
+  #       - s3:PutObject
+  #       - s3:GetObject
+  #     Resource: arn:aws:s3:::${self:provider.environment.USER_IMAGES_BUCKET}/*
   
   apiGateway:
     minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
@@ -74,56 +70,41 @@ functions:
   Auth:
     handler: src/lambda/auth/authorizer.handler
 
-  AddGroup :
-    handler: src/lambda/http/addGroup.handler
-    events: 
-      - http:
-          authorizer: Auth
-          method: post
-          path: addGroup
-          cors: true
-          reqValidatorName: RequestBodyValidator
-          documentation: 
-            summary: Great a New Group
-            description: Great a New Group
-            requestModels: 
-              'application/json': AddGroup
-
   GetImages :
-    handler: src/lambda/http/getGroups.handler
+    handler: src/lambda/http/getImages.handler
     events: 
       - http:
           method: get
           path: getImages
           cors: true
 
-  CheckUser: 
-    handler: src/lambda/http/checkUser.handler
-    events: 
-      - http:
-          authorizer: Auth
-          method: get
-          path: checkUser/{userId}
-          cors: true
-
-
   AddUser:
     handler: src/lambda/http/addUser.handler
+    iamRoleStatements:
+      - Effect: "Allow"        
+        Action:
+          - dynamodb:PutItem        
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.SIS_TABLE}
     events:
       - http:
           authorizer: Auth
           method: post
           path: addUser
           cors: true
-          # reqValidatorName: RequestBodyValidator
-          # documentation: 
-          #   summary: Add a New User
-          #   description: Add a New User
-          #   requestModels: 
-          #     'application/json': AddUser
+          reqValidatorName: RequestBodyValidator
+          documentation: 
+            summary: Add a New User
+            description: Add a New User
+            requestModels: 
+              'application/json': AddUser
               
   CreateImageRecord:
     handler: src/lambda/http/createImageRecord.handler
+    iamRoleStatements:
+      - Effect: "Allow"        
+        Action:
+          - dynamodb:PutItem        
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.SIS_TABLE}
     events:
       - http:
           authorizer: Auth
@@ -232,15 +213,15 @@ resources:
             KeyType: HASH
           - AttributeName: SK
             KeyType: RANGE
-        GlobalSecondaryIndexes:
-          - IndexName: GSI1
-            KeySchema:
-              - AttributeName: SK
-                KeyType: HASH
-              - AttributeName: PK
-                KeyType: RANGE
-            Projection:
-              ProjectionType: 'ALL'
+        # GlobalSecondaryIndexes:
+        #   - IndexName: GSI1
+        #     KeySchema:
+        #       - AttributeName: SK
+        #         KeyType: HASH
+        #       - AttributeName: PK
+        #         KeyType: RANGE
+            # Projection:
+            #   ProjectionType: 'ALL'
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.SIS_TABLE}
 

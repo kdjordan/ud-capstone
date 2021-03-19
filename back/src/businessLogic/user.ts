@@ -7,11 +7,5 @@ export async function addUser(userId: string, username: string, email: string): 
     return await userAccess.addUser(userId, username, email)
   }
 
-export async function checkUser(userId: string): Promise<Boolean> {
-    return await userAccess.checkUser(userId)
-  }
-
-
-
 
   

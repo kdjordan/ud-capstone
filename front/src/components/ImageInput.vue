@@ -53,7 +53,7 @@ methods: {
             return
         }
         try {
-            //get signedUrl for upload to s3
+            //get signedUrl for upload to S3
             const data = await this.$store.dispatch('getUrl')
 
             const imageObject = {
@@ -62,14 +62,13 @@ methods: {
                 uploadUrl: data.uploadUrl,
             }
             console.log("url is ", data)
-            await this.$store.dispatch('putImage', imageObject)
+            //aadd image to S3
+            // await this.$store.dispatch('putImage', imageObject)
 
             //add record to Groups with url
             const result = await this.$store.dispatch('createImageRecord', {
                 description: this.imageDesc,
                 imageId: data.imageId,
-                userId: this.getUser.sub,
-                groupId: groupId
             })
 
             console.log("The result IS: ", result)

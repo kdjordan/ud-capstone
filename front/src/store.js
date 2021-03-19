@@ -75,33 +75,6 @@ export default new Vuex.Store({
       }
     },
 
-    async addGroup({commit, state}, form) {
-      try {
-        console.log("adding group in store ", form)
-        const result = await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/addGroup', form,
-        { headers: { 'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`}})
-        commit('addGroup', form)
-        return result
-        // return true
-      } catch (e) {
-        throw Error(e)
-      }
-    },
-
-    async checkUser({state}){
-      try {
-        const userExists = await axios.get(`https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/checkUser/${state.user.attributes.sub}`,
-          { headers: { 'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`} 
-        })
-        if(!userExists.data['user']) {
-          return false
-        } else { return true}
-      } catch(e) {
-        console.log("Error in Checking user in store", `${e.message}`)
-        throw Error(e)
-      }
-    },
-
     async register(__, form ) {
         const user = await Auth.signUp({
             username: form.email,
@@ -126,7 +99,6 @@ export default new Vuex.Store({
         try {
           const user = await Auth.signIn(form.email, form.password)
           commit('setUser', user)
-          console.log("User in store is: ", user)
           const session = await Auth.currentSession()
           commit('setSession', session)
           return user
@@ -193,14 +165,13 @@ export default new Vuex.Store({
       },
 
       async createImageRecord({state}, imageRecord) {
-        console.log("going out", imageRecord)
+        console.log("going out", imageRecord, state.user.attributes.sub)
         
         try {
           const result = await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/createImageRecord',
             { description: imageRecord.description,
               imageId: imageRecord.imageId,
-              userId: imageRecord.userId,
-              groupId: imageRecord.groupId
+              userId: state.user.attributes.sub
             },
             { headers: { 
              'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`} 
