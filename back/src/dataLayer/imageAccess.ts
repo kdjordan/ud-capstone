@@ -1,9 +1,7 @@
 const AWSXRay = require('aws-xray-sdk-core');
-const XAWS = AWSXRay.captureAWS(require('aws-sdk'));
+const XAWS = AWSXRay.captureAWS(require('aws-sdk'))
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
-
 import { Image } from '../models/Image'
-// import { ImageRecord } from '../models/ImageRecord'
 
 export class ImageAccess {
  
@@ -42,11 +40,11 @@ export class ImageAccess {
         try {
             const images = await this.docClient.query({
               TableName: this.sisTable,
-              KeyConditionExpression: 'PK = PK begins_with(PK, :primary_key)',
+              KeyConditionExpression: 'PK = :pk begins_with("USER#") and :sk begins_with("IMAGE#")',
               ExpressionAttributeValues: {
-                ":primary_key": "USER#",
-              }
-                
+              ':pk': 'PK',
+              ':sk': 'SK',
+  }
            }).promise()
            console.log("the images are", images)
             const items = images.Items
