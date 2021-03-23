@@ -135,7 +135,7 @@ data() {
                 await this.$store.dispatch('login', this.loginForm)
                 this.registeredUser.userId = this.getUser.sub
                 //add user to DynamoDB = will not add id user already exists
-                await this.$store.dispatch('addNewUser', {...this.registeredUser})
+                await this.$store.dispatch('addUser', {...this.registeredUser})
                 this.message = 'Success - Redirecting to your profile page'
                 this.theFunction = 'none'
                 setTimeout(() => {

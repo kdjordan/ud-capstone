@@ -7,44 +7,30 @@ export class ImageAccess {
  
     constructor(
       private readonly docClient: DocumentClient = createDynamoDBClient(),
-      private readonly sisTable = process.env.SIS_TABLE,
+      private readonly sisImages = process.env.SIS_IMAGES,
       private readonly imagesBucket = process.env.USER_IMAGES_BUCKET
       ) {
     }
 
-    async getImage(userId: string): Promise<Image> {
-        try {
-          const theImage = {
-            imageId: "888",
-            description: "holder",
-            iamgeUrl: "URL"
-          }
-        //     const images = await this.docClient.scan({
-        //        TableName: this.sisTable,
-        //        KeyConditionExpression='#PK begins_with(USER#) ',
-        //        ExpressionAttributeNames = {
-        //         "#PK": "PK",
-        //       }  
-        //    }).promise()
-        // //    console.log(iamges)
-        //     const items = images.Items
-        //     return items as Image[]
-          return theImage as Image
-        } catch (e) {
-            console.log('Error searching for the image', e)
-            return e
-        }
-       }
+    // async getImage(imageId: string): Promise<Image> {
+    //     try {
+    //       const theImage = await this.docClient.get({
+    //         TableName: this.sisImages,
+    //         Key: {
+    //           PK: imageId
+    //         }
+    //       }).promise()
+    //       return theImage as Image
+    //     } catch (e) {
+    //         console.log('Error searching for the image', e)
+    //         return e
+    //     }
+    //    }
 
     async getAllImages(): Promise<Image[]> {
         try {
-            const images = await this.docClient.query({
-              TableName: this.sisTable,
-              KeyConditionExpression: 'PK = :pk begins_with("USER#") and :sk begins_with("IMAGE#")',
-              ExpressionAttributeValues: {
-              ':pk': 'PK',
-              ':sk': 'SK',
-  }
+            const images = await this.docClient.scan({
+              TableName: this.sisImages,
            }).promise()
            console.log("the images are", images)
             const items = images.Items
@@ -91,14 +77,13 @@ export class ImageAccess {
 
          try {
            const result = await this.docClient.put({
-               TableName: this.sisTable,
+               TableName: this.sisImages,
                Item: {
-                PK: `USER#${userId}`,
-                SK: `IMAGE#${imageId}`,
+                PK: imageId,
+                SK: createdDate,
                 description: description,
-                imageId: imageId,
-                createdDate: createdDate,
-                imageUrl: attachmentUrl
+                imageUrl: attachmentUrl,
+                owner: userId
                }
              }).promise()
             

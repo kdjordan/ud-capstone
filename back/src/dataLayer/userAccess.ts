@@ -16,7 +16,7 @@ export class UserAccess {
  
     constructor(
       private readonly docClient: DocumentClient = createDynamoDBClient(),
-      private readonly sisTable = process.env.SIS_TABLE
+      private readonly sisUsers = process.env.SIS_USERS
       ) {
     }
 
@@ -24,13 +24,11 @@ export class UserAccess {
         const newUser = { userId, username, email }
         try {
             await this.docClient.put({
-               TableName: this.sisTable,
+               TableName: this.sisUsers,
                Item: {
-                 PK: `USER#${userId}`,
-                 SK: `USER#${userId}`,
-                 userId:  userId,
-                 userName: username,
-                 email: email
+                 PK: userId,
+                 SK: email,
+                 userName: username
                 },
                ConditionExpression : 'attribute_not_exists(PK)'
             },
@@ -42,7 +40,7 @@ export class UserAccess {
             return addedUser 
         } catch (e) {
           console.log("ERROR adding in ACCESS", e)
-          return e
+          throw Error(e)
         }
        }
 

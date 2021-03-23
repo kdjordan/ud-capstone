@@ -57,7 +57,7 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    async addNewUser({state}, form) {
+    async addUser({state}, form) {
       try {
         await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/addUser', 
             {
@@ -140,7 +140,7 @@ export default new Vuex.Store({
         }
       },
 
-      async getImages({state}) {
+      async getImages(_) {
         try {
           const images = await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/getImages',
           )
