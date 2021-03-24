@@ -6,7 +6,6 @@ import { createImageRecord } from '../../businessLogic/images'
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
 
     const {description, imageId, userId, owner} = JSON.parse(event.body)
-    console.log("the owner is ", owner)
 
     try {    
       const result = await createImageRecord(description, imageId, userId, owner)
@@ -20,7 +19,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
         'Access-Control-Allow-Credentials': true
 
       },
-      body: JSON.stringify({items: result})
+      body: JSON.stringify({...result})
     }
    
   } catch (e) {

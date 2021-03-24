@@ -39,6 +39,11 @@ export default new Vuex.Store({
     unSet(state) {
       state.isAuthenticated = false
       state.user = null
+    },
+    addImageToStore(state, payload) {
+      const formatted = formatDate(payload)
+      state.userImages.push(formatted)
+      state.allImages.push(formatted)
     }
   },
   getters: {
@@ -153,7 +158,7 @@ export default new Vuex.Store({
           { headers: { 'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`}}
           )
           const formatted = formatDate(images.data.images)
-          commit('setAllImages', formatted)
+          commit('setUserImages', formatted)
           return formatted
         } catch(e) {
           throw Error(e.message)
@@ -172,7 +177,6 @@ export default new Vuex.Store({
       },
 
       async putImage(_, imageObject) {
-        console.log("ImageObj in store:", imageObject)
         try {
             await axios.put(`${imageObject.uploadUrl}`, imageObject.theImage, 
             { headers: {'Content-Type': imageObject.type, }} 
@@ -184,8 +188,6 @@ export default new Vuex.Store({
       },
 
       async createImageRecord({ state }, imageRecord) {
-        console.log("going out", imageRecord, state.user.attributes.sub)
-        
         try {
           const result = await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/createImageRecord',
             { description: imageRecord.description,
@@ -197,8 +199,7 @@ export default new Vuex.Store({
              'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`} 
             }
           )
-          
-          return result
+          return result.data
 
         } catch(e) {
           throw Error(e.message)

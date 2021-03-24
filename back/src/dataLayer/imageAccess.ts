@@ -79,7 +79,7 @@ export class ImageAccess {
          const  createdDate = new Date().toISOString()
 
          try {
-           const result = await this.docClient.put({
+           await this.docClient.put({
                TableName: this.sisImages,
                Item: {
                 PK: userId,
@@ -90,8 +90,14 @@ export class ImageAccess {
                 owner: owner
                }
              }).promise()
-            
-             return result
+             return {
+              PK: userId,
+              SK: imageId,
+              description: description,
+              imageUrl: attachmentUrl,
+              createdDate: createdDate,
+              owner: owner
+             }
 
          } catch(e) {
            console.log('Error putting image in createImageRecord: ', e)

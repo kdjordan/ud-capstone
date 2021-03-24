@@ -15,6 +15,7 @@
                     <center class="mssg">{{mssg}}</center>
                 </div>
             </div>
+            <!-- {{getUserImages}} -->
       </form>
       <!-- {{panelActive}} -->
   </div>
@@ -61,15 +62,15 @@ methods: {
                 imageType: this.theImage.type,
                 uploadUrl: data.uploadUrl,
             }
-            console.log("url is ", data)
-            //aadd image to S3
+            //aadd image to S3 bucket
             await this.$store.dispatch('putImage', imageObject)
 
-            //add record to Groups with url
-            await this.$store.dispatch('createImageRecord', {
+            //add record to images table with url
+            const addedImage = await this.$store.dispatch('createImageRecord', {
                 description: this.imageDesc,
                 imageId: data.imageId,
             })
+            await this.addImageToStore(addedImage)
             this.imageDesc = ''
             this.theImage = null
             this.panelActive = false
@@ -78,9 +79,16 @@ methods: {
             throw Error(e)
         }
     },
+    async addImageToStore(imageObj){
+        try {
+            this.$store.commit('addImageToStore', imageObj)
+        } catch(e) {
+            throw Error(e.message)
+        }
+    }
 },
     computed: {
-        ...mapGetters(['getUser'])
+        ...mapGetters(['getUser', 'getUserImages'])
     },
 }
 </script>
@@ -92,7 +100,6 @@ methods: {
     height:50px;
     background-image: url(../assets/pencil.svg);
     margin: 2rem auto;
-    // margin-top: 2rem;
     transform: rotate(0deg);
     transition: all .5s ease;
 
