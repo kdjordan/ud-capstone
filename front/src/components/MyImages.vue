@@ -1,15 +1,17 @@
 <template>
-  <div class="my-images">
+  <div class="image-grid">
       <h2><center>Your Images</center></h2>
-      <div class="my-images__container">
-        <div v-for="(image, index) in images" :key="index" class="my-images__container--images">
+      <div class="image-grid__container">
+        <div v-for="(image, index) in images" :key="index" class="image-card">
                 <img :src="`${image.imageUrl}`"  alt="">
-                <div class="details">
-                    <span>Description :</span> {{image.description.toUpperCase()}}
+                <div class="image-card__wrap">
+                    <div class="image-card__details">
+                        <span>Description :</span> <em>{{image.description.toUpperCase()}}</em>
+                    </div>
+                    <div class="image-card__details">
+                        <span>Uploaded On :</span> {{image.createdDate.toUpperCase()}}
+                    </div> 
                 </div>
-                <div class="details">
-                    <span>Uploaded On :</span> {{image.createdDate.toUpperCase()}}
-                </div> 
             </div>
       </div>
   </div>
@@ -51,17 +53,6 @@ export default {
         flex-direction: column;
         justify-content: center;
         align-items: center;
-
-        &--images {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-
-            & img {
-                max-width: 50%;
-            }
-        }
 
     }
 }

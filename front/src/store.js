@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import { Auth } from 'aws-amplify'
 import axios from 'axios'
+import { formatDate } from './assets/utils.js'
 
 Vue.use(Vuex)
 
@@ -63,7 +64,7 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    async addUser({state}, form) {
+    async addUser({ state }, form) {
       try {
         await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/addUser', 
             {
@@ -134,7 +135,7 @@ export default new Vuex.Store({
         }
       },
 
-      async getUrl({state}) {
+      async getUrl({ state }) {
         try {
           let theUrl = await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/genUrl',
           { userId: state.user.sub},
@@ -151,19 +152,20 @@ export default new Vuex.Store({
           const images = await axios.get(`https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/getUserImages/${userId}`,
           { headers: { 'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`}}
           )
-          console.log("images", images.data.images)
-          commit('setUserImages', images.data)
-          return images.data.images
+          const formatted = formatDate(images.data.images)
+          commit('setAllImages', formatted)
+          return formatted
         } catch(e) {
           throw Error(e.message)
         }
       },
 
-      async getAllImages({commit}) {
+      async getAllImages({ commit }) {
         try {
           const images = await axios.get('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/getAllImages')
-          commit('setAllImages', images.data)
-          return images.data
+          const formatted = formatDate(images.data.images)
+          commit('setAllImages', formatted)
+          return formatted
         } catch(e) {
           throw Error(e.message)
         }
@@ -181,7 +183,7 @@ export default new Vuex.Store({
         }
       },
 
-      async createImageRecord({state}, imageRecord) {
+      async createImageRecord({ state }, imageRecord) {
         console.log("going out", imageRecord, state.user.attributes.sub)
         
         try {
