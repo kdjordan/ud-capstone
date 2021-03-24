@@ -7,14 +7,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
     const {description, imageId, userId} = JSON.parse(event.body)
 
-    const result = await createImageRecord(description, imageId, userId)
-    console.log("result in createImage", result)
-
-  try {    
-    
-    // const uploadUrl = await getUploadUrl()
-
-    // console.log('Upload URL is: ', uploadUrl)
+    try {    
+      const result = await createImageRecord(description, imageId, userId)
+      
+      console.log("result in createImage", result)
 
     return {
       statusCode: 200,

@@ -22,6 +22,7 @@ export class UserAccess {
 
     async addUser(userId: string, username: string, email: string): Promise<User> {
         const newUser = { userId, username, email }
+        console.log("user INFO", userId, username, email)
         try {
             await this.docClient.put({
                TableName: this.sisUsers,
@@ -29,8 +30,7 @@ export class UserAccess {
                  PK: userId,
                  SK: email,
                  userName: username
-                },
-               ConditionExpression : 'attribute_not_exists(PK)'
+                }
             },
            ).promise()
 
@@ -40,9 +40,32 @@ export class UserAccess {
             return addedUser 
         } catch (e) {
           console.log("ERROR adding in ACCESS", e)
-          throw Error(e)
+          throw Error(e.message)
         }
        }
+
+      async getUser(userId: string, email: string) {
+        //will look at users DB and return true if user exists - false if not
+        try {
+          const result = await this.docClient.get({
+            TableName: this.sisUsers,
+            Key: {
+              PK: userId,
+              SK: email
+            }
+          })
+          .promise()
+        if(result.Item) {
+          return true
+        } else {
+          return false
+        }
+        
+        } catch (e) {
+          throw Error(e.message)
+        }
+       
+      }
 
     async getUploadUrl() {
         const imageId = uuid.v4()

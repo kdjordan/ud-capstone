@@ -3,7 +3,7 @@
     <h2><center>Welcome Back: {{user['custom:username']}}</center></h2>
     <ImageInput />
     <MyImages />
-    <button @click="userDump">DUMP</button>
+    <!-- <button @click="userDump">DUMP</button> -->
   </div>
 </template>
 
@@ -26,7 +26,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-          'getUser'
+          'getUser',
       ])
   },
   methods: {

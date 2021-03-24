@@ -2,14 +2,14 @@ import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 
-import { getImage } from '../../businessLogic/images'
+import { getUserImages } from '../../businessLogic/images'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-
-    const userId = event.pathParameters.userId
+  const userId = event.pathParameters.userId
+  console.log("userID: ", userId)
 
   try {
-    let images = await getImage(userId)
+    let images = await getUserImages(userId)
 
     return {
       statusCode: 200,

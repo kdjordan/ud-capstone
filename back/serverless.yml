@@ -82,6 +82,19 @@ functions:
       - Effect: Allow        
         Action:
           - dynamodb:Scan        
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.SIS_IMAGES}
+
+  GetUserImages :
+    handler: src/lambda/http/getUserImages.handler
+    events: 
+      - http:
+          authorizer: Auth
+          method: get
+          path: getUserImages/{userId}
+          cors: true
+    iamRoleStatements:
+      - Effect: Allow        
+        Action:   
           - dynamodb:Query        
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.SIS_IMAGES}
 
@@ -102,7 +115,8 @@ functions:
     iamRoleStatements:
       - Effect: Allow        
         Action:
-          - dynamodb:PutItem        
+          - dynamodb:PutItem   
+          - dynamodb:GetItem     
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.SIS_USERS}
               
   CreateImageRecord:
@@ -110,7 +124,7 @@ functions:
     iamRoleStatements:
       - Effect: Allow        
         Action:
-          - dynamodb:PutItem        
+          - dynamodb:PutItem                
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.SIS_IMAGES}
     events:
       - http:

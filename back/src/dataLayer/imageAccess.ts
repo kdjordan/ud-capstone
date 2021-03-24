@@ -8,36 +8,39 @@ export class ImageAccess {
     constructor(
       private readonly docClient: DocumentClient = createDynamoDBClient(),
       private readonly sisImages = process.env.SIS_IMAGES,
-      private readonly imagesBucket = process.env.USER_IMAGES_BUCKET
+      private readonly imagesBucket = process.env.SIS_IMAGES_BUCKET
       ) {
     }
 
-    // async getImage(imageId: string): Promise<Image> {
-    //     try {
-    //       const theImage = await this.docClient.get({
-    //         TableName: this.sisImages,
-    //         Key: {
-    //           PK: imageId
-    //         }
-    //       }).promise()
-    //       return theImage as Image
-    //     } catch (e) {
-    //         console.log('Error searching for the image', e)
-    //         return e
-    //     }
-    //    }
+    async getUserImages(userId: string): Promise<Image[]> {
+      console.log("called getUSerImages to DB", userId)
+        try {
+          const images = await this.docClient.query({
+            TableName: this.sisImages,
+            KeyConditionExpression: 'PK = :userId',
+            ExpressionAttributeValues: {
+              ':userId': userId
+            },
+          }).promise()
+          console.log("theImages are ", images)
+          return images.Items as Image[]
+        } catch (e) {
+            console.log('Error searching for the image', e)
+            throw Error(e.message)
+        }
+
+       }
 
     async getAllImages(): Promise<Image[]> {
         try {
             const images = await this.docClient.scan({
               TableName: this.sisImages,
            }).promise()
-           console.log("the images are", images)
             const items = images.Items
             return items as Image[]
         } catch (e) {
           console.log('Error getting all images: ', e)
-          throw Error(e)
+          throw Error(e.message)
         }
        }
 
@@ -79,11 +82,11 @@ export class ImageAccess {
            const result = await this.docClient.put({
                TableName: this.sisImages,
                Item: {
-                PK: imageId,
-                SK: createdDate,
+                PK: userId,
+                SK: imageId,
                 description: description,
                 imageUrl: attachmentUrl,
-                owner: userId
+                createdDate: createdDate
                }
              }).promise()
             

@@ -66,21 +66,18 @@ methods: {
             await this.$store.dispatch('putImage', imageObject)
 
             //add record to Groups with url
-            const result = await this.$store.dispatch('createImageRecord', {
+            await this.$store.dispatch('createImageRecord', {
                 description: this.imageDesc,
                 imageId: data.imageId,
             })
+            this.imageDesc = ''
+            this.theImage = null
+            this.panelActive = false
 
-            console.log("The result IS: ", result)
         } catch(e) {
-            console.log("Error uploading Image", `${e.message}`)
             throw Error(e)
         }
     },
-    getGroupId(groupDesc) {
-        const group = this.getGroups.filter(group => groupDesc == group.description)
-        return group[0].groupId
-    }
 },
     computed: {
         ...mapGetters(['getUser'])

@@ -7,7 +7,7 @@ const s3 = new AWS.S3({
   signatureVersion: 'v4'
 })
 
-const bucketName = process.env.USER_IMAGES_BUCKET
+const bucketName = process.env.SIS_IMAGES_BUCKET
 const urlExpiration = process.env.SIGNED_URL_EXPIRATION
 
 export const handler: APIGatewayProxyHandler = async (): Promise<APIGatewayProxyResult> => {

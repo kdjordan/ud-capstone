@@ -3,9 +3,10 @@ import { ImageAccess } from '../dataLayer/imageAccess'
 
 const imageAccess = new ImageAccess()
 
-// export async function getImage(userId: string): Promise<Image> {
-//     return await imageAccess.getImage(userId)
-// }
+export async function getUserImages(userId: string): Promise<Image[]> {
+    return await imageAccess.getUserImages(userId)
+}
+
 export async function getAllImages(): Promise<Image[]> {
     return await imageAccess.getAllImages()
 }

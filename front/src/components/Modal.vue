@@ -63,7 +63,6 @@
 
 <script>
 import { mapGetters } from 'vuex' 
-import { Auth } from 'aws-amplify'
 
 export default {
 data() {
@@ -111,7 +110,6 @@ data() {
                 this.buttonDisabled = false
             } catch (e) {
                 this.message = `Error: ${e.message}`
-                console.log("ERROR in register", e) 
             }
         },
         async confirm() {
@@ -126,16 +124,21 @@ data() {
                 this.buttonDisabled = false
             } catch (e){
                 this.message = `Error: ${e.message}`
-                console.log("ERROR in confirm", e) 
             }    
         },
          async login() {
             try {
                 this.buttonDisabled = true
                 await this.$store.dispatch('login', this.loginForm)
-                this.registeredUser.userId = this.getUser.sub
-                //add user to DynamoDB = will not add id user already exists
-                await this.$store.dispatch('addUser', {...this.registeredUser})
+                if(!this.registeredUser.email || !this.registeredUser.userId || !this.registeredUser.username) {
+                    //populate registeredUser so AddUser can be passed to AddUser call
+                    this.registeredUser.email = this.getUser.email
+                    this.registeredUser.userId = this.getUser.sub
+                    this.registeredUser.username = ''
+
+                }
+                //add user to DynamoDB = will not add if user already exists
+                await this.$store.dispatch('addUser', this.registeredUser)
                 this.message = 'Success - Redirecting to your profile page'
                 this.theFunction = 'none'
                 setTimeout(() => {
@@ -144,10 +147,10 @@ data() {
                     this.buttonDisabled = false
                     this.$router.push(`/profile`)
                 }, 2000)
+                
                 // }
             } catch (e) {
                 this.message = `Error: ${e.message}`
-                console.log("ERROR loggin in ", e) 
             }   
          },
          async resendCode() {
@@ -155,7 +158,6 @@ data() {
                  await this.$store.dispatch('resendCode', this.confirmForm.email)
              } catch(e) {
                 this.message = `Error: ${e.message}`
-                console.log("ERROR resending Code", e) 
              }
 
          }

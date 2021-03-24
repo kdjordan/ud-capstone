@@ -12,7 +12,7 @@ export default new Vuex.Store({
     user: null,
     modalActive: false,
     modalType: null,
-    images: [],
+    userImages: [],
     allImages: []
   },
   plugins: [createPersistedState()],
@@ -28,6 +28,9 @@ export default new Vuex.Store({
     setAllImages(state, payload) {
       state.allImages = payload
     },
+    setUserImages(state, payload) {
+      state.userImages = payload
+    },
     setSession(state, session) {
       state.session = session
       state.user.Session = session
@@ -35,7 +38,7 @@ export default new Vuex.Store({
     unSet(state) {
       state.isAuthenticated = false
       state.user = null
-    },
+    }
   },
   getters: {
     getModalActive(state) {
@@ -43,6 +46,9 @@ export default new Vuex.Store({
     },
     getAllImages(state) {
       return state.allImages
+    },
+    getUserImages(state) {
+      return state.userImages
     },
     getModalType(state) {
       return state.modalType
@@ -68,13 +74,13 @@ export default new Vuex.Store({
             { headers: { 'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`}}
         )
       } catch(e) {
-        console.log("Error in Adding New User", `${e.message}`)
-        throw Error(e)
+        throw Error(e.message)
       }
     },
 
     async register(__, form ) {
-        const user = await Auth.signUp({
+      try {
+        let user = await Auth.signUp({
             username: form.email,
             password: form.password,
             attributes: {
@@ -82,14 +88,16 @@ export default new Vuex.Store({
           }
         })
         return user
+        } catch (e) {
+          throw Error(e.message)
+        }
       },
 
       async confirmRegistration(_, form) {
         try {
           await Auth.confirmSignUp(form.email, form.code) 
         } catch (e) {
-          console.log("ERROR Confirming Registration", `${e.message}`) 
-          throw Error(e)
+          throw Error(e.message)
         }
       },
 
@@ -101,8 +109,7 @@ export default new Vuex.Store({
           commit('setSession', session)
           return user
         } catch(e) {
-            console.log("ERROR Loggin in User", `${e.message}`) 
-            throw Error(e)
+            throw Error(e.message)
         }
       },
 
@@ -110,8 +117,7 @@ export default new Vuex.Store({
           try {
             await Auth.resendSignUp(email)
           } catch (e) {
-              console.log("Error resending code", e)
-              throw Error(e)
+            throw Error(e.message)
           }
       },
 
@@ -124,7 +130,7 @@ export default new Vuex.Store({
           commit('unSet', null)
 
         } catch(e) {
-          throw Error(e)
+          throw Error(e.message)
         }
       },
 
@@ -136,40 +142,42 @@ export default new Vuex.Store({
           )
           return theUrl.data
         } catch(e) {
-          throw Error(e)
+          throw Error(e.message)
         }
       },
 
-      async getImages(_) {
+      async getUserImages({ state, commit }, userId) {
         try {
-          const images = await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/getImages',
+          const images = await axios.get(`https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/getUserImages/${userId}`,
+          { headers: { 'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`}}
           )
-          return images.data
+          console.log("images", images.data.images)
+          commit('setUserImages', images.data)
+          return images.data.images
         } catch(e) {
-          throw Error(e)
+          throw Error(e.message)
         }
       },
 
       async getAllImages({commit}) {
         try {
-          const images = await axios.get('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/getAllImages',
-          )
-          commit('setAllImages', images)
+          const images = await axios.get('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/getAllImages')
+          commit('setAllImages', images.data)
           return images.data
         } catch(e) {
-          throw Error(e)
+          throw Error(e.message)
         }
       },
 
       async putImage(_, imageObject) {
         console.log("ImageObj in store:", imageObject)
         try {
-            const result = await axios.put(`${imageObject.uploadUrl}`, imageObject.theImage, 
+            await axios.put(`${imageObject.uploadUrl}`, imageObject.theImage, 
             { headers: {'Content-Type': imageObject.type, }} 
             )
         } catch(e) {
           console.log("error uploading image")
-          throw Error(e)
+          throw Error(e.message)
         }
       },
 
@@ -190,7 +198,7 @@ export default new Vuex.Store({
           return result
 
         } catch(e) {
-          throw Error(e)
+          throw Error(e.message)
         }
       }
   }

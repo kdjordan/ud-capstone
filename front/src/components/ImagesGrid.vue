@@ -2,16 +2,15 @@
   <div class="image-grid">
       <h2><center>Here are our user Images</center></h2>
       <div class="image-grid__container">
-        <!-- <div v-for="(image, index) in groups" :key="index" class="image-grid__images">
-            <img :src="`${group.groupUrl}`" class="images-grid__images--img" alt="">
-            {{group.description.toUpperCase()}}
-        </div> -->
+        <div v-for="(image, index) in images" :key="index" class="image-grid__images">
+            <img :src="`${image.imageUrl}`"  alt="">
+            {{image.description.toUpperCase()}}
+        </div>
       </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
 
 export default {
     data() {
@@ -21,10 +20,8 @@ export default {
     },
     async created() {
         try{
-            // const theImages = await axios.get('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/getAllImages')
             const theImages = await this.$store.dispatch('getAllImages')
-
-            this.images = theImages
+            this.images = theImages.images
         } catch(e) {
             throw Error(e)
         }
@@ -38,22 +35,26 @@ export default {
 
     & h2 {
         text-transform: uppercase;
+        margin-bottom: 4rem;
     }
 
     &__container {
         display: flex;
         align-items: center;
-        justify-content: space-evenly;
+        justify-content: center;
     }
     &__images {
         display: flex;
         flex-direction: column;
         align-items: center;
-        margin: 2rem 0;
+        justify-content: center;
+        // border: 1px solid red;
         
-        &--img {
+        & img {
+            // border: 1px solid red;
             margin-bottom: .5rem;
-            height: 20rem;
+            width: 100%;
+            max-width: 50%;
         }
     }
 }
