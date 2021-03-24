@@ -1,11 +1,17 @@
 <template>
   <div class="my-images">
-      <h2>Images</h2>
-      <div v-for="(image, index) in images" :key="index" class="my-images__container">
-            <img :src="`${image.imageUrl}`"  alt="">
-            {{image.description.toUpperCase()}}
-        </div>
-      <!-- {{images}} -->
+      <h2><center>Your Images</center></h2>
+      <div class="my-images__container">
+        <div v-for="(image, index) in images" :key="index" class="my-images__container--images">
+                <img :src="`${image.imageUrl}`"  alt="">
+                <div class="details">
+                    <span>Description :</span> {{image.description.toUpperCase()}}
+                </div>
+                <div class="details">
+                    <span>Uploaded On :</span> {{image.createdDate.toUpperCase()}}
+                </div> 
+            </div>
+      </div>
   </div>
 </template>
 
@@ -32,10 +38,9 @@ export default {
 <style lang="scss">
 
 .my-images {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
 
     & h2 {
         margin-bottom: 2rem;
@@ -43,12 +48,28 @@ export default {
 
     &__container {
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
 
-        & img {
-            max-width: 50%;
+        &--images {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            & img {
+                max-width: 50%;
+            }
         }
+
+    }
+}
+.details {
+    & span {
+        font-size: .8rem;
+        color: var(--color-primary-blue);
+        text-transform: uppercase;
     }
 }
 

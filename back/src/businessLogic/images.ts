@@ -11,6 +11,6 @@ export async function getAllImages(): Promise<Image[]> {
     return await imageAccess.getAllImages()
 }
   
-export async function createImageRecord(description: string, imageId: string, userId: string): Promise<any> {
-    return await imageAccess.createImageRecord(description, imageId, userId)
+export async function createImageRecord(description: string, imageId: string, userId: string, owner: string): Promise<any> {
+    return await imageAccess.createImageRecord(description, imageId, userId, owner)
 }

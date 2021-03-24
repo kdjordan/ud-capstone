@@ -11,8 +11,11 @@
       },
       "userId": {
         "type": "string"
+      },
+      "owner": {
+        "type": "string"
       }
     },
-    "required": ["description","imageId","userId"],
+    "required": ["description","imageId","userId","owner"],
     "additionalProperties": false
 }

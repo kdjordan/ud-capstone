@@ -4,15 +4,23 @@
       <div class="image-grid__container">
         <div v-for="(image, index) in images" :key="index" class="image-grid__images">
             <img :src="`${image.imageUrl}`"  alt="">
-            {{image.description.toUpperCase()}}
-        </div>
+            <div class="details">
+                <span>Description :</span> {{image.description.toUpperCase()}}
+            </div>
+            <div class="details">
+                <span>Uploaded By :</span> {{image.owner.toUpperCase()}}
+            </div> 
+        </div> 
+      <!-- {{images}} -->
       </div>
   </div>
 </template>
 
 <script>
+import Header from './Header.vue'
 
 export default {
+  components: { Header },
     data() {
         return{
             images: [],
@@ -48,14 +56,19 @@ export default {
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        // border: 1px solid red;
         
         & img {
-            // border: 1px solid red;
             margin-bottom: .5rem;
             width: 100%;
             max-width: 50%;
         }
+    }
+}
+.details {
+    & span {
+        font-size: .8rem;
+        color: var(--color-primary-blue);
+        text-transform: uppercase;
     }
 }
 </style>

@@ -188,7 +188,8 @@ export default new Vuex.Store({
           const result = await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/createImageRecord',
             { description: imageRecord.description,
               imageId: imageRecord.imageId,
-              userId: state.user.attributes.sub
+              userId: state.user.attributes.sub,
+              owner: state.user.attributes['custom:username']
             },
             { headers: { 
              'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`} 

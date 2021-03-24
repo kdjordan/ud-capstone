@@ -74,7 +74,7 @@ export class ImageAccess {
     //    }
     // sample comment
 
-       async createImageRecord(description: string, imageId: string, userId: string) {
+       async createImageRecord(description: string, imageId: string, userId: string, owner: string) {
          const attachmentUrl = createAttachmentUrl(this.imagesBucket, imageId)
          const  createdDate = new Date().toISOString()
 
@@ -86,7 +86,8 @@ export class ImageAccess {
                 SK: imageId,
                 description: description,
                 imageUrl: attachmentUrl,
-                createdDate: createdDate
+                createdDate: createdDate,
+                owner: owner
                }
              }).promise()
             
