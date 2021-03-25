@@ -19,6 +19,9 @@ custom:
       - name: AddUser
         contentType: application/json
         schema: ${file(models/add-new-user-request.json)}
+      - name: DeleteImage
+        contentType: application/json
+        schema: ${file(models/delete-image-request.json)}
       - name: CreateImageRecordRequest
         contentType: application/json
         schema: ${file(models/create-image-record-request.json)}
@@ -96,6 +99,26 @@ functions:
       - Effect: Allow        
         Action:   
           - dynamodb:Query        
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.SIS_IMAGES}
+
+  DeleteUserImage :
+    handler: src/lambda/http/deleteUserImage.handler
+    events: 
+      - http:
+          authorizer: Auth
+          method: post
+          path: deleteUserImage
+          cors: true
+          reqValidatorName: RequestBodyValidator
+          documentation: 
+            summary: Delete a user image from images table
+            description: Delete a user image from images table
+            requestModels: 
+              'application/json': DeleteImage
+    iamRoleStatements:
+      - Effect: Allow        
+        Action:   
+          - dynamodb:DeleteItem       
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.SIS_IMAGES}
 
   AddUser:

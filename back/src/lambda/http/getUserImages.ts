@@ -6,7 +6,6 @@ import { getUserImages } from '../../businessLogic/images'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const userId = event.pathParameters.userId
-  console.log("userID: ", userId)
 
   try {
     let images = await getUserImages(userId)
@@ -22,7 +21,6 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     }
    
   } catch (e) {
-      console.log("ERROR getting all images in getGroups Lambda", e);
       
       return {
         statusCode: 502,

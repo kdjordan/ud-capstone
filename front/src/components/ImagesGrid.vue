@@ -1,6 +1,9 @@
 <template>
   <div class="image-grid">
       <h2><center>Here are our user Images</center></h2>
+      <div v-if="getAllImagesEmpty">
+          <h3><center>Sorry No Images Uploaded yet 😧</center></h3>
+      </div>
       <div class="image-grid__container">
         <div v-for="(image, index) in images" :key="index" class="image-card">
             <div class="image-card__img-wrap">
@@ -14,6 +17,7 @@
                     <span>Uploaded By :</span> {{image.owner.toUpperCase()}}
                 </div> 
             </div>
+            <!-- {{getAllImages}} -->
         </div> 
       </div>
   </div>
@@ -21,13 +25,20 @@
 
 <script>
 import Header from './Header.vue'
+import { mapGetters } from 'vuex' 
 
 export default {
   components: { Header },
     data() {
         return{
-            images: [],
+            images: []
         }
+    },
+    computed: {
+        ...mapGetters([
+            'getAllImages',
+            'getAllImagesEmpty'
+        ])
     },
     async created() {
         try{

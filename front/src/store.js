@@ -14,10 +14,16 @@ export default new Vuex.Store({
     modalActive: false,
     modalType: null,
     userImages: [],
-    allImages: []
+    allImages: [],
   },
   plugins: [createPersistedState()],
   mutations: {
+    // toggleUserImagesEmpty(state){
+    //   state.userImagesEmpty = !state.userImagesEmpty
+    // },
+    // toggleAllImagesEmpty(state){
+    //   state.allImagesEmpty = !state.allImagesEmpty
+    // },
     setModalActive(state, payload) {
       state.modalActive = !state.modalActive
       state.modalType = payload
@@ -47,6 +53,20 @@ export default new Vuex.Store({
     }
   },
   getters: {
+    getUserImagesEmpty(state) {
+      if(state.userImages.length == 0){
+        return true
+      } else {
+        return false
+      }
+    },
+    getAllImagesEmpty(state) {
+      if(state.allImages.length == 0){
+        return true
+      } else {
+        return false
+      }
+    },
     getModalActive(state) {
       return state.modalActive
     },
@@ -187,6 +207,22 @@ export default new Vuex.Store({
         }
       },
 
+      async deleteImage({ state }, imageRef) {
+        console.log('delete', imageRef)
+        try {
+            const result = await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/deleteUserImage', 
+            {
+              userId: imageRef.PK,
+              imageId: imageRef.SK
+            }, 
+            { headers: { 'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`} }
+            )
+        } catch(e) {
+          console.log("error deleting image")
+          throw Error(e.message)
+        }
+      },
+
       async createImageRecord({ state }, imageRecord) {
         try {
           const result = await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/createImageRecord',
@@ -195,9 +231,7 @@ export default new Vuex.Store({
               userId: state.user.attributes.sub,
               owner: state.user.attributes['custom:username']
             },
-            { headers: { 
-             'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`} 
-            }
+            { headers: { 'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`} }
           )
           return result.data
 

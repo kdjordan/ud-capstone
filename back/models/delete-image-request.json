@@ -1,18 +1,15 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "newGroup",
+    "title": "deleteImage",
     "type": "object",
     "properties": {
-      "groupId": {
+      "userId": {
         "type": "string"
       },
-      "description": {
-        "type": "string"
-      },
-      "groupUrl": {
+      "imageId": {
         "type": "string"
       }
     },
-    "required": ["groupId","description","groupUrl"],
+    "required": ["userId","imageId"],
     "additionalProperties": false
   }

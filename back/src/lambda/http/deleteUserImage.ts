@@ -1,14 +1,15 @@
 import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 
-import { createImageRecord } from '../../businessLogic/images'
+import { deleteUserImage } from '../../businessLogic/images'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-
-    const {description, imageId, userId, owner} = JSON.parse(event.body)
+    console.log(JSON.parse(event.body))
+    const {userId, imageId} = JSON.parse(event.body)
+    console.log({imageId, userId})
 
     try {    
-      const result = await createImageRecord(description, imageId, userId, owner)
+      const result = await deleteUserImage(imageId, userId)
 
     return {
       statusCode: 200,
@@ -21,7 +22,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     }
    
   } catch (e) {
-      console.log("ERROR adding image in Lambda", e);
+      console.log("ERROR deleting image in Lambda", e);
       
       return {
         statusCode: 502,

@@ -13,7 +13,6 @@ export class ImageAccess {
     }
 
     async getUserImages(userId: string): Promise<Image[]> {
-      console.log("called getUSerImages to DB", userId)
         try {
           const images = await this.docClient.query({
             TableName: this.sisImages,
@@ -25,7 +24,24 @@ export class ImageAccess {
           console.log("theImages are ", images)
           return images.Items as Image[]
         } catch (e) {
-            console.log('Error searching for the image', e)
+            throw Error(e.message)
+        }
+
+       }
+    async deleteUserImage(userId: string, imageId:string): Promise<Boolean> {
+      console.log("called delete to DB", userId, imageId)
+        try {
+          const result = await this.docClient.delete({
+            TableName: this.sisImages,
+            Key:{
+              PK: imageId,
+              SK: userId
+            }
+          }).promise()
+          console.log("selete result",result)
+          return true
+        } catch (e) {
+            console.log('Error deleting for the image', e)
             throw Error(e.message)
         }
 
@@ -39,40 +55,9 @@ export class ImageAccess {
             const items = images.Items
             return items as Image[]
         } catch (e) {
-          console.log('Error getting all images: ', e)
           throw Error(e.message)
         }
        }
-
-    // async putImage(description: string, PK: string, imageId: string createdAt: string): Promise<Image> {
-    //     try {
-    //         const image = await this.docClient.update({
-    //            TableName: this.sisTable,
-    //            Key: { PK },
-
-    //           //  Item: {
-    //           //   SK: `USER#${imageId}`,
-    //           //   createdAt:  createdAt,
-    //           //   desciption: description,
-    //            }
-    //        }).promise()
-
-
-    // UpdateExpression: "set #theImages = {imageUrl :iurl, owner: :uid, description: :desc, createdAt: :added",
-    //            ExpressionAttributeNames: {
-    //              ":iurl": attachmentUrl,
-    //              ":uid": userId,
-    //              ":desc": description,
-    //              ":added": createdDate
-    //            },
-    //            ReturnValues: "UPDATED_NEW"
-    //     //    console.log(iamges)
-    //         return image as Image
-    //     } catch (e) {
-    //         return e
-    //     }
-    //    }
-    // sample comment
 
        async createImageRecord(description: string, imageId: string, userId: string, owner: string) {
          const attachmentUrl = createAttachmentUrl(this.imagesBucket, imageId)
@@ -100,8 +85,7 @@ export class ImageAccess {
              }
 
          } catch(e) {
-           console.log('Error putting image in createImageRecord: ', e)
-            return e 
+           throw Error(e.message)
          }
       }
       

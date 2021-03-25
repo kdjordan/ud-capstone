@@ -14,7 +14,6 @@ export function formatDate(imageObj) {
         })
         return newImages
     } else {
-        console.log("not object")
         return {
             SK : imageObj.SK,
             PK : imageObj.PK,
