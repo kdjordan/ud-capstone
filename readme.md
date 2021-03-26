@@ -9,4 +9,4 @@ You will not need to clone the repo and run npm install in orer to test this pro
 You can simply visit : [http://udapstone-20210326095331-hostingbucket-dev.s3-website-us-west-2.amazonaws.com/](http://udapstone-20210326095331-hostingbucket-dev.s3-website-us-west-2.amazonaws.com/) 
 
 All lambda functions use individual haandlers and generate CloudWatch logs:
-![CloudWatch sreengrab](./images/cloudwatch-log.png =200px)
+![CloudWatch sreengrab](<img src="./images/cloudwatch-log.png" alt="drawing" width="200"/>)
