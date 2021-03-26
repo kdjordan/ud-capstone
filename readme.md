@@ -6,7 +6,7 @@ This is a simmple Image Sharing App built utilizing Amplify for the frontend dep
 I built a Vuejs custom frontend to handle signup and image uploading. 
 I used Amplify for both Auth flow and Hosting. 
 You will not need to clone the repo and run npm install in orer to test this project. 
-You can simply visit : [I'm an inline-style link](http://udapstone-20210326095331-hostingbucket-dev.s3-website-us-west-2.amazonaws.com/) 
+You can simply visit : [http://udapstone-20210326095331-hostingbucket-dev.s3-website-us-west-2.amazonaws.com/](http://udapstone-20210326095331-hostingbucket-dev.s3-website-us-west-2.amazonaws.com/) 
 
 All lambda functions use individaul haandlers and generate CloudWatch logs:
 ![CloudWatch sreengrab](/images/logo.png)
