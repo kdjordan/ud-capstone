@@ -18,12 +18,6 @@ export default new Vuex.Store({
   },
   plugins: [createPersistedState()],
   mutations: {
-    // toggleUserImagesEmpty(state){
-    //   state.userImagesEmpty = !state.userImagesEmpty
-    // },
-    // toggleAllImagesEmpty(state){
-    //   state.allImagesEmpty = !state.allImagesEmpty
-    // },
     setModalActive(state, payload) {
       state.modalActive = !state.modalActive
       state.modalType = payload
@@ -196,6 +190,23 @@ export default new Vuex.Store({
         }
       },
 
+      async updateImage({ state }, updateObj) {
+        console.log("updating in store", updateObj)
+        try {
+          const images = await axios.patch('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/updateImage', {
+            userId: updateObj.PK, imageId: updateObj.SK, description: updateObj.description
+          },
+          { headers: { 'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`}}
+          )
+          // const formatted = formatDate(images.data.images)
+          // commit('setAllImages', formatted)
+          // commit('setAllImages', images)
+          return images
+        } catch(e) {
+          throw Error(e.message)
+        }
+      },
+
       async putImage(_, imageObject) {
         try {
             await axios.put(`${imageObject.uploadUrl}`, imageObject.theImage, 
@@ -208,9 +219,8 @@ export default new Vuex.Store({
       },
 
       async deleteImage({ state }, imageRef) {
-        console.log('delete', imageRef)
         try {
-            const result = await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/deleteUserImage', 
+            await axios.post('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/deleteUserImage', 
             {
               userId: imageRef.PK,
               imageId: imageRef.SK

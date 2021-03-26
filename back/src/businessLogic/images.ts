@@ -11,10 +11,14 @@ export async function deleteUserImage(userId: string, imageId: string): Promise<
     return await imageAccess.deleteUserImage(userId, imageId)
 }
 
+export async function updateImage(userId: string, imageId: string, description: string): Promise<Boolean> {
+    return await imageAccess.updateImage(userId, imageId, description)
+}
+
 export async function getAllImages(): Promise<Image[]> {
     return await imageAccess.getAllImages()
 }
   
-export async function createImageRecord(description: string, imageId: string, userId: string, owner: string): Promise<any> {
+export async function createImageRecord(description: string, imageId: string, userId: string, owner: string): Promise<Image> {
     return await imageAccess.createImageRecord(description, imageId, userId, owner)
 }

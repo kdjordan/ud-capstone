@@ -15,9 +15,7 @@
                     <center class="mssg">{{mssg}}</center>
                 </div>
             </div>
-            <!-- {{getUserImages}} -->
       </form>
-      <!-- {{panelActive}} -->
   </div>
 </template>
 

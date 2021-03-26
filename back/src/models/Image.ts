@@ -1,6 +1,9 @@
 export interface Image {
-    imageId: string,
+    PK: string,
+    SK: string,
+    owner: string,
     description: string,
-    iamgeUrl: string
+    imageUrl: string,
+    createdDate: string
   }
   

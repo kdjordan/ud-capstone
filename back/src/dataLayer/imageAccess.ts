@@ -21,7 +21,6 @@ export class ImageAccess {
               ':userId': userId
             },
           }).promise()
-          console.log("theImages are ", images)
           return images.Items as Image[]
         } catch (e) {
             throw Error(e.message)
@@ -34,8 +33,8 @@ export class ImageAccess {
           const result = await this.docClient.delete({
             TableName: this.sisImages,
             Key:{
-              PK: imageId,
-              SK: userId
+              PK: userId,
+              SK: imageId
             }
           }).promise()
           console.log("selete result",result)
@@ -48,46 +47,68 @@ export class ImageAccess {
        }
 
     async getAllImages(): Promise<Image[]> {
-        try {
-            const images = await this.docClient.scan({
-              TableName: this.sisImages,
-           }).promise()
-            const items = images.Items
-            return items as Image[]
-        } catch (e) {
-          throw Error(e.message)
-        }
-       }
-
-       async createImageRecord(description: string, imageId: string, userId: string, owner: string) {
-         const attachmentUrl = createAttachmentUrl(this.imagesBucket, imageId)
-         const  createdDate = new Date().toISOString()
-
-         try {
-           await this.docClient.put({
-               TableName: this.sisImages,
-               Item: {
-                PK: userId,
-                SK: imageId,
-                description: description,
-                imageUrl: attachmentUrl,
-                createdDate: createdDate,
-                owner: owner
-               }
-             }).promise()
-             return {
-              PK: userId,
-              SK: imageId,
-              description: description,
-              imageUrl: attachmentUrl,
-              createdDate: createdDate,
-              owner: owner
-             }
-
-         } catch(e) {
-           throw Error(e.message)
-         }
+      try {
+          const images = await this.docClient.scan({
+            TableName: this.sisImages,
+          }).promise()
+          const items = images.Items
+          return items as Image[]
+      } catch (e) {
+        throw Error(e.message)
       }
+    }
+
+    async updateImage(userId: string, imageId: string, description: string): Promise<Boolean> {
+      console.log("in image access", {userId, imageId, description})
+      try {
+          const result = await this.docClient.update({
+            TableName: this.sisImages,
+            Key: {
+              PK: userId,
+              SK: imageId
+            },
+            UpdateExpression: 'set description = :nd',
+            ExpressionAttributeValues: {
+              ':nd':  description
+            },
+            ReturnValues:"UPDATED_NEW"
+          }).promise()
+          console.log("result", result)
+          return true
+      } catch (e) {
+        throw Error(e.message)
+      }
+    }
+
+    async createImageRecord(description: string, imageId: string, userId: string, owner: string): Promise<Image> {
+      const attachmentUrl = createAttachmentUrl(this.imagesBucket, imageId)
+      const  createdDate = new Date().toISOString()
+
+      try {
+        await this.docClient.put({
+            TableName: this.sisImages,
+            Item: {
+            PK: userId,
+            SK: imageId,
+            description: description,
+            imageUrl: attachmentUrl,
+            createdDate: createdDate,
+            owner: owner
+            }
+          }).promise()
+          return {
+          PK: userId,
+          SK: imageId,
+          description: description,
+          imageUrl: attachmentUrl,
+          createdDate: createdDate,
+          owner: owner
+          }
+
+      } catch(e) {
+        throw Error(e.message)
+      }
+  }
       
 }
 

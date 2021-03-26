@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "deleteImage",
+    "type": "object",
+    "properties": {
+      "userId": {
+        "type": "string"
+      },
+      "imageId": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      }
+    },
+    "required": ["userId","imageId","description"],
+    "additionalProperties": false
+  }

@@ -25,6 +25,9 @@ custom:
       - name: CreateImageRecordRequest
         contentType: application/json
         schema: ${file(models/create-image-record-request.json)}
+      - name: UpdateImageRecordRequest
+        contentType: application/json
+        schema: ${file(models/update-image-record-request.json)}
 
     # Add the serverless-webpack plugin
 plugins:
@@ -161,6 +164,26 @@ functions:
             description: Add an Image Record to groups table
             requestModels: 
               'application/json': CreateImageRecordRequest
+
+  UpdateImageRecord:
+    handler: src/lambda/http/updateImage.handler
+    iamRoleStatements:
+      - Effect: Allow        
+        Action:
+          - dynamodb:UpdateItem                
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.SIS_IMAGES}
+    events:
+      - http:
+          authorizer: Auth
+          method: patch
+          path: updateImage
+          cors: true
+          reqValidatorName: RequestBodyValidator
+          documentation: 
+            summary: Update and Image Description
+            description: Update and Image Description
+            requestModels: 
+              'application/json': UpdateImageRecordRequest
   
   GenUrl:
     handler: src/lambda/s3/genUrl.handler
@@ -222,7 +245,9 @@ resources:
             - Sid: PublicReadForGetBucketObjects
               Effect: Allow
               Principal: '*'
-              Action: 's3:GetObject'
+              Action: 
+                - 's3:GetObject'
+                - 's3:DeleteObject'
               Resource: 'arn:aws:s3:::${self:provider.environment.SIS_IMAGES_BUCKET}/*'
         Bucket: !Ref UserImageBucket
 

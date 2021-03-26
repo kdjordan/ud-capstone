@@ -17,7 +17,6 @@
                     <span>Uploaded By :</span> {{image.owner.toUpperCase()}}
                 </div> 
             </div>
-            <!-- {{getAllImages}} -->
         </div> 
       </div>
   </div>
@@ -41,7 +40,7 @@ export default {
         ])
     },
     async created() {
-        try{
+        try {
             const theImages = await this.$store.dispatch('getAllImages')
             this.images = theImages
         } catch(e) {
@@ -50,8 +49,3 @@ export default {
     }
 }
 </script>
-
-<style lang="scss">
-
-
-</style>
