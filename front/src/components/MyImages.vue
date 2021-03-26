@@ -105,7 +105,7 @@ export default {
      async created() {
          try {
              this.images = []
-             if(this.$store.state.user.attributes.sub) {
+             if(this.$store.state.isAuthenticated) {
                  this.images = await this.$store.dispatch('getUserImages', this.$store.state.user.attributes.sub)
              }
          } catch (e) {

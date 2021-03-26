@@ -15,7 +15,6 @@
                     <center class="mssg">{{mssg}}</center>
                 </div>
             </div>
-            {{buttonDisabled}}
       </form>
   </div>
 </template>
@@ -35,6 +34,7 @@ data() {
 },
 methods: {
     togglePanel() {
+        this.buttonDisabled = false
         this.panelActive = !this.panelActive
     },
     clearMssg() {

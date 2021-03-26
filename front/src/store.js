@@ -9,7 +9,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     isAuthenticated: false,
-    user: null,
+    user: {},
     modalActive: false,
     modalType: null,
     userImages: [],
