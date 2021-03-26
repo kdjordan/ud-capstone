@@ -10,7 +10,7 @@
                 </div>
                 
                 <input type="file" accept="image/*" @change="uploadImage($event)">
-                <button class="add-button" type ="submit" :disabled="mssg !== ''">Upload</button>
+                <button class="add-button" type ="submit" :disabled="mssg !== '' || buttonDisabled">Upload</button>
                 <div v-if="mssg !== ''">
                     <center class="mssg">{{mssg}}</center>
                 </div>
@@ -28,7 +28,8 @@ data() {
         mssg: '',
         theImage: null,
         imageDesc: '',
-        panelActive: false
+        panelActive: false,
+        buttonDisabled: false
     }
 },
 methods: {
@@ -43,6 +44,7 @@ methods: {
         this.theImage = e.target.files[0]
     },
     async doUpload() {
+        this.buttonDisabled = true
         if(this.theImage == null) {
             this.mssg = 'No Image Selected'
             return
@@ -72,6 +74,7 @@ methods: {
             this.imageDesc = ''
             this.theImage = null
             this.panelActive = false
+            this.buttonDisabled = false
 
         } catch(e) {
             throw Error(e)

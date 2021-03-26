@@ -87,11 +87,9 @@ export default {
                 })
                 //update vuex
                 this.$store.commit('setUserImages', this.images)
-                
-                
                 //update images table
                 this.$store.dispatch('updateImage', {PK: this.currentImage.PK, SK: this.currentImage.SK, description: this.currentImage.description})
-                console.log(this.currentImage)
+                
             }
         },
         edit(el) {

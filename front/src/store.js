@@ -198,7 +198,6 @@ export default new Vuex.Store({
       },
 
       async updateImage({ state }, updateObj) {
-        console.log("updating in store", updateObj)
         try {
           await axios.patch('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/updateImage', 
           { userId: updateObj.PK, imageId: updateObj.SK, description: updateObj.description},
