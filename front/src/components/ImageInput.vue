@@ -10,11 +10,12 @@
                 </div>
                 
                 <input type="file" accept="image/*" @change="uploadImage($event)">
-                <button class="add-button" type ="submit" :disabled="mssg !== '' || buttonDisabled">Upload</button>
+                <button class="add-button" type ="submit" :disabled="buttonDisabled">Upload</button>
                 <div v-if="mssg !== ''">
                     <center class="mssg">{{mssg}}</center>
                 </div>
             </div>
+            {{buttonDisabled}}
       </form>
   </div>
 </template>
