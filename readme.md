@@ -8,5 +8,9 @@ I used Amplify for both Auth flow and Hosting.
 You will not need to clone the repo and run npm install in orer to test this project. 
 You can simply visit : [http://udapstone-20210326095331-hostingbucket-dev.s3-website-us-west-2.amazonaws.com/](http://udapstone-20210326095331-hostingbucket-dev.s3-website-us-west-2.amazonaws.com/) 
 
-All lambda functions use individual haandlers and generate CloudWatch logs:
-<img src="./images/cloudwatch-log.png" alt="drawing" width="500"/>
+All lambda functions use individual handlers and generate CloudWatch logs:
+<img src="./images/cloudwatch-log.png" alt="drawing" width="900"/>
+
+X-Ray tracing is enabled:
+<img src="./images/xray.png" alt="drawing" width="900"/>
+
