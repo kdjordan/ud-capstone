@@ -41,8 +41,9 @@ export default {
     },
     async created() {
         try {
-            const theImages = await this.$store.dispatch('getAllImages')
-            this.images = theImages
+            this.images = []
+            this.images = await this.$store.dispatch('getAllImages')
+            
         } catch(e) {
             throw Error(e)
         }

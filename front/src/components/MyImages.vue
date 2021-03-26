@@ -5,7 +5,7 @@
             <img :src="`${this.currentImage.imageUrl}`" class="thumbnail">
             <h3>Enter New Description</h3>
             <input type="text" class="desc-input" :placeholder="`${this.currentImage.description}`" v-model="newDesc">
-            <button class="image-grid__button image-grid__button--edit small" @click="updateDesc()">SUBMIT</button>
+            <button class="image-grid__button image-grid__button--edit small" @click="updateDesc">SUBMIT</button>
             <button class="image-grid__button image-grid__button--delete small" @click="modalActive = false">CANCEL</button>
         </div>
       </div>
@@ -87,6 +87,8 @@ export default {
                 })
                 //update vuex
                 this.$store.commit('setUserImages', this.images)
+                
+                
                 //update images table
                 this.$store.dispatch('updateImage', {PK: this.currentImage.PK, SK: this.currentImage.SK, description: this.currentImage.description})
                 console.log(this.currentImage)
@@ -104,6 +106,7 @@ export default {
     },
      async created() {
          try {
+             this.images = []
              this.images = await this.$store.dispatch('getUserImages', this.$store.state.user.attributes.sub)
          } catch (e) {
              console.log(e)

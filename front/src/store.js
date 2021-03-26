@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import createPersistedState from 'vuex-persistedstate'
 import { Auth } from 'aws-amplify'
 import axios from 'axios'
 import { formatDate } from './assets/utils.js'
@@ -16,7 +15,6 @@ export default new Vuex.Store({
     userImages: [],
     allImages: [],
   },
-  plugins: [createPersistedState()],
   mutations: {
     setModalActive(state, payload) {
       state.modalActive = !state.modalActive
@@ -30,11 +28,18 @@ export default new Vuex.Store({
       state.allImages = payload
     },
     setUserImages(state, payload) {
+      state.userImgages = []
       state.userImages = payload
     },
     setSession(state, session) {
       state.session = session
       state.user.Session = session
+    },
+    clearUserImages(state) {
+      state.userImages = []
+    },
+    clearAllImages(state) {
+      state.allImages = []
     },
     unSet(state) {
       state.isAuthenticated = false
@@ -172,6 +177,7 @@ export default new Vuex.Store({
           { headers: { 'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`}}
           )
           const formatted = formatDate(images.data.images)
+          commit('clearUserImages')
           commit('setUserImages', formatted)
           return formatted
         } catch(e) {
@@ -183,6 +189,7 @@ export default new Vuex.Store({
         try {
           const images = await axios.get('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/getAllImages')
           const formatted = formatDate(images.data.images)
+          commit('clearAllImages')
           commit('setAllImages', formatted)
           return formatted
         } catch(e) {
@@ -193,15 +200,10 @@ export default new Vuex.Store({
       async updateImage({ state }, updateObj) {
         console.log("updating in store", updateObj)
         try {
-          const images = await axios.patch('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/updateImage', {
-            userId: updateObj.PK, imageId: updateObj.SK, description: updateObj.description
-          },
+          await axios.patch('https://2cu6zhp8uk.execute-api.us-west-2.amazonaws.com/dev/updateImage', 
+          { userId: updateObj.PK, imageId: updateObj.SK, description: updateObj.description},
           { headers: { 'Authorization': `Bearer ${state.user.Session.accessToken.jwtToken}`}}
           )
-          // const formatted = formatDate(images.data.images)
-          // commit('setAllImages', formatted)
-          // commit('setAllImages', images)
-          return images
         } catch(e) {
           throw Error(e.message)
         }
