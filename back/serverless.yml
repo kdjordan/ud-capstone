@@ -54,20 +54,6 @@ provider:
     USER_POOL_ID: us-west-2_S9oCYx1ff
     SIGNED_URL_EXPIRATION: 300
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
-    
-  iamRoleStatements:
-  #   - Effect: Allow
-  #     Action:
-  #       - dynamodb:Query
-  #       - dynamodb:PutItem
-  #       - dynamodb:Scan
-  #       - dynamodb:GetItem
-  #       - dynamodb:UpdateItem
-  #     Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.SIS_TABLE}
-    - Effect: Allow
-      Action:
-        - s3:PutObject
-      Resource: arn:aws:s3:::${self:provider.environment.SIS_IMAGES_BUCKET}/*
   
   apiGateway:
     minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
@@ -247,6 +233,7 @@ resources:
               Principal: '*'
               Action: 
                 - 's3:GetObject'
+                - 's3:PutObject'
                 - 's3:DeleteObject'
               Resource: 'arn:aws:s3:::${self:provider.environment.SIS_IMAGES_BUCKET}/*'
         Bucket: !Ref UserImageBucket
